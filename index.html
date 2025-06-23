@@ -323,7 +323,20 @@
                     <div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="reservation-guests" min="1" max="10" placeholder="Cantidad" required></div>
+                    <div class="form-group">
+  <label class="form-label">Personas</label>
+  <select class="form-input" id="reservation-guests" required>
+    <option value="" disabled selected>Cantidad</option>
+    <option value="1">1 px</option>
+    <option value="2">2 px</option>
+    <option value="3">3 px</option>
+    <option value="4">4 px</option>
+    <option value="5">5 px</option>
+    <option value="6">6 px</option>
+    <option value="7">7 px</option>
+    <option value="8">8 px</option>
+  </select>
+</div>
                     <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
                 </div>
                 <div id="reservation-visit-reason-container"></div><hr style="margin: 20px 0;">
