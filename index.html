@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GastroHub App Optimizada</title>
+    <title>GastroHub App - Gestión para Restaurantes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="apple-touch-icon" sizes="180x180" href="https://placehold.co/180x180/764ba2/white?text=GH">
     <link rel="icon" type="image/png" sizes="32x32" href="https://placehold.co/32x32/764ba2/white?text=GH">
@@ -46,7 +46,10 @@
             padding-bottom: 80px; /* Space for bottom nav */
         }
 
-        .content { display: none; }
+        .content { 
+            display: none; 
+            padding: 20px; /* Mejora: Añadido padding general a las páginas */
+        }
         .content.active { display: block; animation: fadeIn 0.5s; }
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -221,8 +224,13 @@
         .reservation-actions { margin-left: 10px; display: flex; gap: 5px; }
 
         #category-filter-sticky {
-            position: sticky; top: 0; z-index: 10;
-            background: white; padding: 10px 0;
+            position: sticky; top: -20px; /* Compensa el padding del contenedor */
+            z-index: 10;
+            background: white; 
+            padding-top: 10px;
+            margin: 0 -20px; /* Extiende el fondo al borde */
+            padding-left: 20px; /* Mantiene el select alineado */
+            padding-right: 20px; /* Mantiene el select alineado */
         }
 
         #qr-code-container {
@@ -335,10 +343,12 @@
             <div id="profile-logged-in" class="hidden">
                 <div class="tabs"><button class="tab-button active" data-tab="profile-datos">Mis Datos</button><button class="tab-button" data-tab="profile-reservas">Reservas</button><button class="tab-button" data-tab="profile-visitas">Visitas</button></div>
                 <div id="tab-profile-datos" class="tab-content active">
-                    <div id="profile-data-display"></div><form id="profile-form"></form>
+                    <div id="profile-data-display"></div>
+                    <form id="profile-form"></form>
                     <div id="profile-buttons">
                         <button id="edit-profile-button" class="btn btn-primary"><i class="fa-solid fa-pen"></i> Actualizar Datos</button>
-                        <button id="save-profile-button" class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
+                        <!-- Mejora: Botón de guardar ahora es de tipo submit y está asociado al formulario -->
+                        <button id="save-profile-button" type="submit" form="profile-form" class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
                         <button id="cancel-edit-button" class="btn btn-secondary hidden"><i class="fa-solid fa-xmark"></i> Cancelar</button>
                         <button id="delete-account-button" class="btn btn-danger hidden" data-modal-target="delete-confirm-modal" data-modal-action="open"><i class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
                     </div>
@@ -723,7 +733,6 @@
             
             // --- Delegación para acciones de Perfil ---
             if (target.closest('#edit-profile-button')) setProfileEditMode(true);
-            if (target.closest('#save-profile-button')) { /* La lógica está en el submit del form */ }
             if (target.closest('#cancel-edit-button')) setProfileEditMode(false);
             
             // --- Delegación para acciones de Reservas en Perfil ---
