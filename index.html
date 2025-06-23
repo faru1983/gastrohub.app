@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GastroHub App Optimizada</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://placehold.co/180x180/764ba2/white?text=GH">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://placehold.co/32x32/764ba2/white?text=GH">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://placehold.co/16x16/764ba2/white?text=GH">
+    <link rel="manifest" href="img/favicon/site.webmanifest">
+    <!-- Script para generar QR -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <style>
         /* Estilos Generales y Reseteo */
         :root {
@@ -20,6 +25,7 @@
             --danger-color: #f44336;
             --warning-color: #ff9800;
             --pending-color: #ffc107;
+            --toast-bg: rgba(0, 0, 0, 0.8);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,10 +43,10 @@
             min-height: 100vh;
             box-shadow: 0 0 30px rgba(0,0,0,0.3);
             position: relative;
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* Space for bottom nav */
         }
 
-        .content { padding: 20px; display: none; }
+        .content { display: none; }
         .content.active { display: block; animation: fadeIn 0.5s; }
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -84,6 +90,7 @@
         .btn-danger { background-color: var(--danger-color); color: white; }
         .btn-sm { padding: 8px 12px; font-size: 14px; }
         .btn-full { width: 100%; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
 
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; margin-bottom: 5px; font-weight: 500; color: var(--dark-gray); }
@@ -109,9 +116,9 @@
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s;
         }
-        .modal.visible { opacity: 1; visibility: visible; }
+        .modal.visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
         .modal-content {
             background: white; padding: 25px; border-radius: 20px; width: 90%;
             max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -122,6 +129,20 @@
         .modal-title { font-size: 24px; font-weight: bold; color: var(--primary-color); }
         .close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
         
+        /* Notificaciones Toast */
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .toast {
+            padding: 12px 20px; background: var(--toast-bg); color: white; border-radius: 25px;
+            font-size: 14px; font-weight: 500; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 10px;
+            opacity: 0; transform: translateY(-20px); animation: slideInUp 0.5s forwards;
+        }
+        .toast.success { background: var(--success-color); }
+        .toast.danger { background: var(--danger-color); }
+        @keyframes slideInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Estilos específicos de Páginas */
         .restaurant-banner {
             width: 100%; height: 200px;
@@ -174,20 +195,16 @@
 
         .benefit-item, .history-item, .reservation-item {
             background: var(--light-gray); border-radius: 10px; margin-bottom: 12px;
-            padding: 12px 15px;
+            padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
         }
         .reservation-item-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .status-badge {
-            padding: 3px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
+            padding: 3px 8px; border-radius: 8px; font-size: 12px;
+            font-weight: 600; color: white;
         }
         .status-confirmada { background-color: var(--success-color); }
         .status-pendiente { background-color: var(--pending-color); color: var(--dark-gray);}
         .status-cancelada { background-color: var(--danger-color); }
-
 
         #profile-data-display p { margin: 0 0 12px; color: var(--medium-gray); line-height: 1.4; }
         #profile-data-display strong { font-weight: 600; color: var(--dark-gray); display: block; margin-bottom: 2px; font-size: 14px; }
@@ -201,13 +218,29 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        .reservation-actions button { margin-left: 10px; }
+        .reservation-actions { margin-left: 10px; display: flex; gap: 5px; }
+
+        #category-filter-sticky {
+            position: sticky; top: 0; z-index: 10;
+            background: white; padding: 10px 0;
+        }
+
+        #qr-code-container {
+            padding: 10px;
+            background-color: white;
+            border-radius: 10px;
+            display: inline-block; /* To fit content size */
+            margin: 0 auto 20px auto;
+        }
+
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000;"></div>
+        <!-- Contenedor para notificaciones flotantes -->
+        <div id="toast-container"></div>
 
+        <!-- PÁGINA: INICIO -->
         <div id="inicio" class="content active">
             <div class="restaurant-banner"><div class="restaurant-logo"></div></div>
             <div class="restaurant-info">
@@ -219,11 +252,9 @@
                     <div class="contact-item"><i class="fa-solid fa-phone fa-fw" style="color: var(--primary-color);"></i><span>+56 9 1234 5678</span></div>
                 </div>
             </div>
-            <div class="google-rating" onclick="window.open('https://maps.google.com', '_blank')">
+            <div class="google-rating" data-modal-target="review-modal" data-modal-action="open">
                 <i class="fab fa-google" style="color: #4285f4;"></i>
-                <span class="rating-stars">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-                </span>
+                <span class="rating-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></span>
                 <span><strong>4.8</strong> en Google</span>
             </div>
             <div class="social-links">
@@ -232,7 +263,7 @@
                 <a href="#" class="social-link" style="background: #000;"><i class="fab fa-tiktok"></i></a>
                 <a href="#" class="social-link" style="background: #25d366;"><i class="fab fa-whatsapp"></i></a>
             </div>
-            <div class="quick-actions" id="quick-actions-container">
+            <div class="quick-actions">
                 <div class="quick-action" data-page="carta"><div class="quick-action-icon"><i class="fa-solid fa-utensils"></i></div><div>Carta</div></div>
                 <div class="quick-action" data-page="reservas"><div class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></div><div>Reservas</div></div>
                 <div class="quick-action" data-page="fidelizacion"><div class="quick-action-icon"><i class="fa-solid fa-star"></i></div><div>Fidelidad</div></div>
@@ -240,19 +271,23 @@
             <div class="footer">Sitio potenciado por <a href="https://gastrohub.app" target="_blank">GastroHub App</a></div>
         </div>
 
+        <!-- PÁGINA: CARTA -->
         <div id="carta" class="content">
             <div class="page-header"><h1 class="page-title">Nuestra Carta</h1></div>
-            <div class="form-group"><select class="form-input" id="category-filter"><option value="all">Todas las categorías</option></select></div>
+            <div id="category-filter-sticky">
+                <div class="form-group"><select class="form-input" id="category-filter"><option value="all">Todas las categorías</option></select></div>
+            </div>
             <div id="menu-container"></div>
         </div>
 
+        <!-- PÁGINA: FIDELIZACIÓN -->
         <div id="fidelizacion" class="content">
             <div class="page-header"><h1 class="page-title">Fidelidad</h1><button id="fidelizacion-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
             <div id="loyalty-logged-out">
                 <div class="loyalty-info">
                     <h2>¡Únete a nuestro programa!</h2><p>¡Junta 5 estrellas y obtén un 40% de descuento!</p>
                     <div class="stars-display"><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></div>
-                    <button class="btn btn-primary btn-full" id="loyalty-login-btn"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
+                    <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
                 </div>
             </div>
             <div id="loyalty-logged-in" class="hidden">
@@ -271,6 +306,7 @@
             </div>
         </div>
 
+        <!-- PÁGINA: RESERVAS -->
         <div id="reservas" class="content">
             <div class="page-header"><h1 class="page-title">Hacer Reserva</h1><button id="reservas-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
             <form id="reservation-form">
@@ -282,19 +318,19 @@
                     <div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="reservation-guests" min="1" max="10" placeholder="Cantidad" required></div>
                     <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
                 </div>
-                <div id="reservation-visit-reason-container"></div>
-                <hr style="margin: 20px 0;">
+                <div id="reservation-visit-reason-container"></div><hr style="margin: 20px 0;">
                 <button type="button" id="load-my-data-btn" class="btn btn-secondary btn-full" style="margin-bottom: 15px;"><i class="fa-solid fa-user-check"></i> Cargar Mis Datos</button>
                 <div id="reservation-user-fields"></div>
                 <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-calendar-check"></i> Confirmar Reserva</button>
             </form>
         </div>
 
+        <!-- PÁGINA: PERFIL -->
         <div id="perfil" class="content">
             <div class="page-header"><h1 class="page-title">Mi Perfil</h1><button id="perfil-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
             <div id="profile-logged-out">
                 <p style="margin-bottom: 20px;">Crea una cuenta o inicia sesión para acceder a beneficios exclusivos, gestionar tus reservas y más.</p>
-                <button class="btn btn-primary btn-full" id="profile-login-btn"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
+                <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
             </div>
             <div id="profile-logged-in" class="hidden">
                 <div class="tabs"><button class="tab-button active" data-tab="profile-datos">Mis Datos</button><button class="tab-button" data-tab="profile-reservas">Reservas</button><button class="tab-button" data-tab="profile-visitas">Visitas</button></div>
@@ -304,7 +340,7 @@
                         <button id="edit-profile-button" class="btn btn-primary"><i class="fa-solid fa-pen"></i> Actualizar Datos</button>
                         <button id="save-profile-button" class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
                         <button id="cancel-edit-button" class="btn btn-secondary hidden"><i class="fa-solid fa-xmark"></i> Cancelar</button>
-                        <button id="delete-account-button" class="btn btn-danger hidden"><i class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
+                        <button id="delete-account-button" class="btn btn-danger hidden" data-modal-target="delete-confirm-modal" data-modal-action="open"><i class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
                     </div>
                 </div>
                 <div id="tab-profile-reservas" class="tab-content"><h4>Reservas Vigentes</h4><div id="active-reservations-list"></div><h4 style="margin-top: 20px;">Historial</h4><div id="past-reservations-list"></div></div>
@@ -312,6 +348,7 @@
             </div>
         </div>
 
+        <!-- NAVEGACIÓN INFERIOR -->
         <div class="bottom-nav">
             <div class="nav-item active" data-page="inicio"><div class="nav-icon"><i class="fa-solid fa-house"></i></div><div class="nav-label">Inicio</div></div>
             <div class="nav-item" data-page="carta"><div class="nav-icon"><i class="fa-solid fa-utensils"></i></div><div class="nav-label">Carta</div></div>
@@ -321,39 +358,26 @@
         </div>
     </div>
 
-    <div id="auth-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Bienvenido</h2><button class="close-modal" data-target="auth-modal">×</button></div><div class="tabs"><button class="tab-button active" data-tab="login-form-tab">Iniciar Sesión</button><button class="tab-button" data-tab="register-form-tab">Registrarse</button></div><form id="login-form-tab" class="tab-content active"><div class="form-group"><label>Email</label><input type="email" class="form-input" required></div><div class="form-group"><label>Contraseña</label><input type="password" class="form-input" required></div><button type="submit" class="btn btn-primary btn-full">Entrar</button></form><form id="register-form-tab" class="tab-content"></form></div></div>
-    <div id="delete-confirm-modal" class="modal"><div class="modal-content" style="text-align: center;"><div class="modal-header"><h2 class="modal-title">¿Eliminar cuenta?</h2><button class="close-modal" data-target="delete-confirm-modal">×</button></div><p>Para confirmar, escribe <strong>Eliminar</strong> abajo.</p><input type="text" id="delete-confirm-input" class="form-input"><button id="final-delete-button" class="btn btn-danger btn-full" disabled style="margin-top: 15px;">Confirmar Eliminación</button></div></div>
+    <!-- ========= MODALES ========= -->
+    <div id="auth-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Bienvenido</h2><button class="close-modal" data-modal-action="close">×</button></div><div class="tabs"><button class="tab-button active" data-tab="login-form-tab">Iniciar Sesión</button><button class="tab-button" data-tab="register-form-tab">Registrarse</button></div><form id="login-form-tab" class="tab-content active"><div class="form-group"><label>Email</label><input type="email" class="form-input" required></div><div class="form-group"><label>Contraseña</label><input type="password" class="form-input" required></div><button type="submit" class="btn btn-primary btn-full">Entrar</button></form><form id="register-form-tab" class="tab-content"></form></div></div>
+    <div id="delete-confirm-modal" class="modal"><div class="modal-content" style="text-align: center;"><div class="modal-header"><h2 class="modal-title">¿Eliminar cuenta?</h2><button class="close-modal" data-modal-action="close">×</button></div><p>Para confirmar, escribe <strong>Eliminar</strong> abajo.</p><input type="text" id="delete-confirm-input" class="form-input"><button id="final-delete-button" class="btn btn-danger btn-full" disabled style="margin-top: 15px;">Confirmar Eliminación</button></div></div>
     <div id="menu-item-modal" class="modal"><div class="modal-content" id="menu-item-modal-content"></div></div>
-    <div id="qr-benefit-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Usa tu Beneficio</h2><button class="close-modal" data-target="qr-benefit-modal">×</button></div><img id="qr-benefit-img" src="" alt="QR Beneficio" style="width: 200px; height: 200px; margin: 0 auto 20px auto; display: block;"><p>Presenta este código QR para validar tu beneficio.</p></div></div>
-    <div id="edit-reservation-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Editar Reserva</h2>
-                <button class="close-modal" data-target="edit-reservation-modal">×</button>
-            </div>
-            <form id="edit-reservation-form">
-                <input type="hidden" id="edit-reservation-index">
-                <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="edit-reservation-date" required></div>
-                <div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="edit-reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
-                <div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="edit-reservation-guests" min="1" max="10" placeholder="Cantidad" required></div>
-                <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="edit-reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
-                <button type="submit" class="btn btn-primary btn-full">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
-
+    <div id="qr-benefit-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Usa tu Beneficio</h2><button class="close-modal" data-modal-action="close">×</button></div><div id="qr-code-container"></div><p>Presenta este código QR para validar tu beneficio.</p></div></div>
+    <div id="edit-reservation-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Editar Reserva</h2><button class="close-modal" data-modal-action="close">×</button></div><form id="edit-reservation-form"><input type="hidden" id="edit-reservation-id"><div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="edit-reservation-date" required></div><div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="edit-reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div><div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="edit-reservation-guests" min="1" max="10" placeholder="Cantidad" required></div><div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="edit-reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div><button type="submit" class="btn btn-primary btn-full">Guardar Cambios</button></form></div></div>
+    <div id="review-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Escríbenos una Reseña</h2><button class="close-modal" data-modal-action="close">×</button></div><p>¡Tu opinión es muy importante para nosotros!</p><a href="https://g.page/r/CZMhTQCrKMcrEBM/review" target="_blank" class="btn btn-primary btn-full" style="margin-top:15px;"><i class="fab fa-google"></i> Ir a Google Reseñas</a></div></div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // ===================================================================
-        // ESTADO Y DATOS GLOBALES
+        // 1. ESTADO CENTRALIZADO Y DATOS DE LA APLICACIÓN
         // ===================================================================
         const state = {
             currentPage: 'inicio',
             isLoggedIn: false,
             qrCameraActive: false,
+            qrCodeInstance: null, // Guardará la instancia del QR para poder limpiarla
             visitReasons: ['General', 'Celebración', 'Reunión', 'Otro'],
-            userData: {},
+            userData: {}, // Los datos del usuario se cargan al iniciar sesión
             menuData: {
                 entradas: [
                     { id: 1, name: 'Bruschetta', desc: 'Pan tostado con tomates frescos, ajo, albahaca y aceite de oliva extra virgen.', price: 8500, img: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=200&h=200&fit=crop' },
@@ -361,22 +385,14 @@
                     { id: 3, name: 'Empanadas de Pino (3 und.)', desc: 'Clásicas empanadas chilenas rellenas de pino de carne, cebolla y especias.', price: 7800, img: 'https://images.unsplash.com/photo-1679310249395-ae267ae0d273?w=200&h=200&fit=crop' }
                 ],
                 principales: [
-                    { id: 4, name: 'Risotto de Hongos', desc: 'Arroz cremoso con hongos porcini, champiñones frescos y un toque de parmesano.', price: 15500, originalPrice: 16500, img: 'https://images.unsplash.com/photo-1712407881629-a8ca82a3c64f?w=200&h=200&fit=crop' },
+                    { id: 4, name: 'Risotto de Hongos', desc: 'Arroz cremoso con hongos porcini, champiñones frescos y un toque de parmesano.', price: 15500, originalPrice: 16500, img: 'https://images.unsplash.com/photo-1712407881629-a8ca82aed5?w=200&h=200&fit=crop' },
                     { id: 5, name: 'Salmón a la Plancha', desc: 'Filete de salmón fresco a la plancha, acompañado de espárragos y salsa holandesa.', price: 18900, img: 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=200&h=200&fit=crop' },
-                    { id: 6, name: 'Fetuccini Alfredo', desc: 'Pasta fetuccini en salsa cremosa de queso parmesano y mantequilla.', price: 12500, img: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=200&h=200&fit=crop' },
-                    { id: 7, name: 'Lomo Vetado con Papas Rústicas', desc: 'Jugoso lomo vetado a la parrilla, servido con papas rústicas y chimichurri.', price: 21900, img: 'https://images.unsplash.com/photo-1625944226957-10458fe06691?w=200&h=200&fit=crop' }
                 ],
-                postres: [
-                    { id: 8, name: 'Tiramisú Clásico', desc: 'Capas de bizcochos savoiardi, café, mascarpone y cacao.', price: 6500, img: 'https://images.unsplash.com/photo-1639744211487-b27e3551b07c?w=200&h=200&fit=crop' },
-                    { id: 9, name: 'Volcán de Chocolate', desc: 'Bizcocho de chocolate con centro líquido, acompañado de helado de vainilla.', price: 7200, img: 'https://images.unsplash.com/photo-1663100143548-1555dcfd62b7?w=200&h=200&fit=crop' }
-                ],
-                bebidas: [
-                    { id: 10, name: 'Agua Mineral', desc: 'Con o sin gas.', price: 2500, img: 'https://images.unsplash.com/photo-1639256150782-ecdb00b01e84?w=200&h=200&fit=crop' },
-                    { id: 11, name: 'Jugo Natural', desc: 'Naranja, piña o mango.', price: 3500, img: 'https://images.unsplash.com/photo-1705322149828-9adc9065f0c4?w=200&h=200&fit=crop' },
-                    { id: 12, name: 'Copa de Vino', desc: 'Cabernet Sauvignon o Sauvignon Blanc.', price: 4800, img: 'https://images.unsplash.com/photo-1422748733255-ee572fddeab0?w=200&h=200&fit=crop' }
-                ]
+                postres: [ { id: 8, name: 'Tiramisú Clásico', desc: 'Capas de bizcochos savoiardi, café, mascarpone y cacao.', price: 6500, img: 'https://images.unsplash.com/photo-1639744211487-b27e3551b07c?w=200&h=200&fit=crop' }, ],
+                bebidas: [ { id: 10, name: 'Agua Mineral', desc: 'Con o sin gas.', price: 2500, img: 'https://images.unsplash.com/photo-1639256150782-ecdb00b01e84?w=200&h=200&fit=crop' },]
             },
-            loggedInUserData: {
+            // Plantilla de datos para un usuario que inicia sesión
+            loggedInUserDataTemplate: {
                 nombre: 'Juan', apellidos: 'Pérez', email: 'juan@ejemplo.com', celular: '+56912345678',
                 fechaNacimiento: '1990-05-15', comuna: 'Las Condes', instagram: '@juanperez', promoMessages: true, stars: 3,
                 benefits: { current: [{ name: '20% Descuento Cumpleaños', expiry: '2025-12-31', id: 'b1'}], used: [] },
@@ -386,41 +402,75 @@
                         { id: 'res1', date: '2025-07-10', time: '20:00', guests: 4, place: 'interior', status: 'confirmada' },
                         { id: 'res2', date: '2025-07-15', time: '19:30', guests: 2, place: 'terraza', status: 'pendiente' }
                     ], 
-                    past: [
-                        { id: 'res3', date: '2025-06-01', time: '19:30', guests: 2, place: 'interior', status: 'cancelada' }
-                    ] 
+                    past: [ { id: 'res3', date: '2025-06-01', time: '19:30', guests: 2, place: 'interior', status: 'cancelada' } ] 
                 }
             }
         };
 
+        // ===================================================================
+        // 2. CACHÉ DE ELEMENTOS DEL DOM
+        // ===================================================================
         const DOMElements = {
-            pages: document.querySelectorAll('.content'), navItems: document.querySelectorAll('.nav-item'),
+            pages: document.querySelectorAll('.content'),
+            navItems: document.querySelectorAll('.nav-item'),
             logoutButtons: document.querySelectorAll('[id$="-logout-btn"]'),
-            quickActionsContainer: document.getElementById('quick-actions-container'),
-            menuContainer: document.getElementById('menu-container'), categoryFilter: document.getElementById('category-filter'),
-            loyalty: { loggedIn: document.getElementById('loyalty-logged-in'), loggedOut: document.getElementById('loyalty-logged-out'), starsDisplay: document.getElementById('stars-display'), starsText: document.getElementById('stars-count-text'), currentBenefitsList: document.getElementById('current-benefits-list'), usedBenefitsList: document.getElementById('used-benefits-list'), visitHistoryList: document.getElementById('visit-history-list'), qrButton: document.getElementById('qr-button'), qrCamera: document.getElementById('qr-camera'), visitForm: document.getElementById('visit-form'), confirmVisitBtn: document.getElementById('confirm-visit-btn'), visitReasonContainer: document.getElementById('loyalty-visit-reason-container') },
-            profile: { loggedIn: document.getElementById('profile-logged-in'), loggedOut: document.getElementById('profile-logged-out'), dataDisplay: document.getElementById('profile-data-display'), form: document.getElementById('profile-form'), buttons: { edit: document.getElementById('edit-profile-button'), save: document.getElementById('save-profile-button'), cancel: document.getElementById('cancel-edit-button'), delete: document.getElementById('delete-account-button'), }, activeReservations: document.getElementById('active-reservations-list'), pastReservations: document.getElementById('past-reservations-list'), visitHistoryList: document.getElementById('profile-visit-history-list') },
-            reservations: { form: document.getElementById('reservation-form'), loadDataBtn: document.getElementById('load-my-data-btn'), userFields: document.getElementById('reservation-user-fields'), visitReasonContainer: document.getElementById('reservation-visit-reason-container'),
-                            dateInput: document.getElementById('reservation-date'), timeSelect: document.getElementById('reservation-time'),
-                            guestsInput: document.getElementById('reservation-guests'), placeSelect: document.getElementById('reservation-place')},
-            deleteConfirm: { modal: document.getElementById('delete-confirm-modal'), input: document.getElementById('delete-confirm-input'), button: document.getElementById('final-delete-button'), },
-            auth: { modal: document.getElementById('auth-modal'), loginForm: document.getElementById('login-form-tab'), registerForm: document.getElementById('register-form-tab'), },
-            menuItemModal: { modal: document.getElementById('menu-item-modal'), content: document.getElementById('menu-item-modal-content'), },
-            qrBenefitModal: { modal: document.getElementById('qr-benefit-modal'), img: document.getElementById('qr-benefit-img'), },
-            editReservationModal: {
-                modal: document.getElementById('edit-reservation-modal'),
-                form: document.getElementById('edit-reservation-form'),
-                indexInput: document.getElementById('edit-reservation-index'),
-                dateInput: document.getElementById('edit-reservation-date'),
-                timeSelect: document.getElementById('edit-reservation-time'),
-                guestsInput: document.getElementById('edit-reservation-guests'),
-                placeSelect: document.getElementById('edit-reservation-place')
+            toastContainer: document.getElementById('toast-container'),
+            menuContainer: document.getElementById('menu-container'),
+            categoryFilter: document.getElementById('category-filter'),
+            // Secciones que cambian con el login/logout
+            loyalty: { loggedIn: document.getElementById('loyalty-logged-in'), loggedOut: document.getElementById('loyalty-logged-out') },
+            profile: { loggedIn: document.getElementById('profile-logged-in'), loggedOut: document.getElementById('profile-logged-out') },
+        };
+
+        // ===================================================================
+        // 3. FUNCIONES DE UTILIDAD GLOBALES
+        // ===================================================================
+        
+        /**
+         * Muestra u oculta un modal por su ID.
+         * @param {string} modalId - El ID del modal a controlar.
+         * @param {boolean} show - `true` para mostrar, `false` para ocultar.
+         */
+        const toggleModal = (modalId, show) => {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.toggle('visible', show);
+                if (!show) {
+                    // Limpiar el input de confirmación de borrado al cerrar
+                    if (modalId === 'delete-confirm-modal') {
+                        document.getElementById('delete-confirm-input').value = '';
+                        document.getElementById('final-delete-button').disabled = true;
+                    }
+                }
             }
         };
-        
+
+        /**
+         * Muestra una notificación toast.
+         * @param {string} message - El mensaje a mostrar.
+         * @param {string} type - 'success', 'danger', o por defecto.
+         * @param {number} duration - Duración en ms antes de desaparecer.
+         */
+        const showToast = (message, type = '', duration = 3000) => {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
+            DOMElements.toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
+        };
+
         // ===================================================================
-        // FUNCIONES REUTILIZABLES Y DE RENDERIZADO
+        // 4. FUNCIONES DE GENERACIÓN DE HTML (REUTILIZABLES)
         // ===================================================================
+
+        /**
+         * Genera los campos de formulario para datos de usuario.
+         * @param {boolean} isEditMode - Si los campos son para edición o creación.
+         * @param {object} data - Los datos del usuario a precargar.
+         * @returns {string} - El HTML de los campos del formulario.
+         */
         const generateUserFieldsHTML = (isEditMode, data = {}) => {
             const fields = [
                 { id: 'nombre', label: 'Nombre', value: data.nombre || '', required: true },
@@ -433,11 +483,55 @@
             ];
             return fields.map(f => `<div class="form-group"><label class="form-label" for="field-${f.id}">${f.label}</label><input class="form-input" type="${f.type || 'text'}" id="field-${f.id}" value="${f.value}" placeholder="${f.placeholder || ''}" ${f.required && isEditMode ? 'required' : ''}></div>`).join('');
         };
-
+        
+        /**
+         * Genera un select para el motivo de la visita.
+         * @param {string} id - El ID para el elemento select.
+         * @returns {string} - El HTML del select.
+         */
         const generateVisitReasonSelectHTML = (id) => {
             const options = state.visitReasons.map(r => `<option value="${r}">${r}</option>`).join('');
             return `<div class="form-group"><label class="form-label">Motivo de la Visita</label><select id="${id}" class="form-input">${options}</select></div>`;
         };
+
+        /**
+         * Genera el HTML para un solo item de reserva.
+         * @param {object} r - El objeto de la reserva.
+         * @param {boolean} isActive - Si la reserva está en la lista de activas.
+         * @returns {string} - El HTML del item de reserva.
+         */
+        const createReservationItemHTML = (r, isActive) => `
+            <div class="reservation-item" data-id="${r.id}">
+                <div>
+                    <div class="reservation-item-header">
+                        <span>${r.date} - ${r.time} (${r.guests} pers.)</span>
+                        <span class="status-badge status-${r.status}">${r.status}</span>
+                    </div>
+                    <small>Lugar: ${r.place === 'any' ? 'Cualquiera' : r.place}</small>
+                </div>
+                ${isActive ? `
+                    <div class="reservation-actions">
+                        <button class="btn btn-sm btn-secondary edit-reservation-btn"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-danger cancel-reservation-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        /**
+         * Genera el HTML para la lista de historial de visitas.
+         * @param {Array} historyArray - El array de visitas.
+         * @returns {string} - El HTML de la lista.
+         */
+        const renderVisitHistoryHTML = (historyArray) => {
+            return historyArray.length 
+                ? historyArray.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') 
+                : '<p>No tienes visitas registradas.</p>';
+        };
+
+        // ===================================================================
+        // 5. FUNCIONES DE RENDERIZADO DE PÁGINAS
+        // ===================================================================
 
         const renderMenu = (filter = 'all') => {
             let menuHTML = '';
@@ -447,135 +541,282 @@
                     state.menuData[category].forEach(item => {
                         menuHTML += `
                             <div class="menu-item" data-item-id="${item.id}" data-category="${category}">
-                                <img src="${item.img}" alt="${item.name}" class="menu-item-image">
+                                <img src="${item.img}" alt="${item.name}" class="menu-item-image" onerror="this.src='https://placehold.co/200x200/cccccc/ffffff?text=Imagen'">
                                 <div style="flex-grow: 1;">
                                     <h4>${item.name}</h4>
                                     <p style="font-size: 14px; color: var(--medium-gray);">${item.desc}</p>
                                     <div>
-                                        <span class="price-current">$${item.price.toLocaleString()}</span>
-                                        ${item.originalPrice ? `<span class="price-original">$${item.originalPrice.toLocaleString()}</span>` : ''}
+                                        <span class="price-current">$${item.price.toLocaleString('es-CL')}</span>
+                                        ${item.originalPrice ? `<span class="price-original">$${item.originalPrice.toLocaleString('es-CL')}</span>` : ''}
                                     </div>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
                     menuHTML += `</div>`;
                 }
             }
             DOMElements.menuContainer.innerHTML = menuHTML;
-            document.querySelectorAll('.menu-item').forEach(itemEl => {
-                itemEl.addEventListener('click', (e) => {
-                    const category = e.currentTarget.dataset.category;
-                    const itemId = parseInt(e.currentTarget.dataset.itemId);
-                    const item = state.menuData[category].find(i => i.id === itemId);
-                    if (item) showItemDetail(item);
-                });
-            });
         };
 
         const renderLoyaltyPage = () => {
             const { stars, benefits, visitHistory } = state.userData;
-            DOMElements.loyalty.starsDisplay.innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="fa-solid fa-star ${i < stars ? '' : 'inactive'}"></i>`).join('');
-            DOMElements.loyalty.starsText.textContent = `${stars} de 5 estrellas`;
-            const createBenefitItem = (b, isCurrent) => `<div class="benefit-item"><div><strong>${b.name}</strong><br><small>${isCurrent ? 'Válido hasta: ' + b.expiry : 'Usado el: ' + b.date}</small></div>${isCurrent ? `<button class="btn btn-success btn-sm use-benefit-btn" data-name="${b.name}">Usar</button>` : '<span>✅</span>'}</div>`;
-            DOMElements.loyalty.currentBenefitsList.innerHTML = benefits.current.length ? benefits.current.map(b => createBenefitItem(b, true)).join('') : '<p>No tienes beneficios vigentes.</p>';
-            DOMElements.loyalty.usedBenefitsList.innerHTML = benefits.used.length ? benefits.used.map(b => createBenefitItem(b, false)).join('') : '<p>Aún no has usado beneficios.</p>';
-            DOMElements.loyalty.visitHistoryList.innerHTML = visitHistory.length ? visitHistory.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') : '<p>No tienes visitas registradas.</p>';
-            document.querySelectorAll('.use-benefit-btn').forEach(btn => btn.addEventListener('click', (e) => showQRBenefitModal(e.currentTarget.dataset.name)));
+            document.getElementById('stars-display').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="fa-solid fa-star ${i < stars ? '' : 'inactive'}"></i>`).join('');
+            document.getElementById('stars-count-text').textContent = `${stars} de 5 estrellas`;
+            
+            const createBenefitItem = (b, isCurrent) => `
+                <div class="benefit-item">
+                    <div><strong>${b.name}</strong><br><small>${isCurrent ? 'Válido hasta: ' + b.expiry : 'Usado el: ' + b.date}</small></div>
+                    ${isCurrent ? `<button class="btn btn-success btn-sm use-benefit-btn" data-name="${b.name}">Usar</button>` : '<span>✅</span>'}
+                </div>`;
+
+            document.getElementById('current-benefits-list').innerHTML = benefits.current.length ? benefits.current.map(b => createBenefitItem(b, true)).join('') : '<p>No tienes beneficios vigentes.</p>';
+            document.getElementById('used-benefits-list').innerHTML = benefits.used.length ? benefits.used.map(b => createBenefitItem(b, false)).join('') : '<p>Aún no has usado beneficios.</p>';
+            document.getElementById('visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
         };
 
         const renderProfilePage = () => {
-            const { reservations, visitHistory } = state.userData;
-            DOMElements.profile.dataDisplay.innerHTML = `<p><strong>Nombre:</strong> ${state.userData.nombre} ${state.userData.apellidos}</p><p><strong>Email:</strong> ${state.userData.email}</p><p><strong>Celular:</strong> ${state.userData.celular}</p><p><strong>Nacimiento:</strong> ${state.userData.fechaNacimiento || 'No especificado'}</p><p><strong>Comuna:</strong> ${state.userData.comuna || 'No especificada'}</p><p><strong>Instagram:</strong> ${state.userData.instagram || 'No especificado'}</p><p><strong>Mensajes:</strong> ${state.userData.promoMessages ? 'Activados' : 'Desactivados'}</p>`;
+            const { nombre, apellidos, email, celular, fechaNacimiento, comuna, instagram, promoMessages, reservations, visitHistory } = state.userData;
+            document.getElementById('profile-data-display').innerHTML = `
+                <p><strong>Nombre:</strong> ${nombre} ${apellidos}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Celular:</strong> ${celular}</p>
+                <p><strong>Nacimiento:</strong> ${fechaNacimiento || 'No especificado'}</p>
+                <p><strong>Comuna:</strong> ${comuna || 'No especificada'}</p>
+                <p><strong>Instagram:</strong> ${instagram || 'No especificado'}</p>
+                <p><strong>Mensajes:</strong> ${promoMessages ? 'Activados' : 'Desactivados'}</p>`;
             
-            const createReservationItem = (r, index, isActive) => `
-                <div class="reservation-item">
-                    <div class="reservation-item-header">
-                        <span>${r.date} - ${r.time} (${r.guests} pers.)</span>
-                        <span class="status-badge status-${r.status}">${r.status}</span>
-                    </div>
-                    <small>Lugar: ${r.place === 'any' ? 'Cualquiera' : r.place}</small>
-                    ${isActive ? `
-                        <div class="reservation-actions">
-                            <button class="btn btn-sm btn-secondary edit-reservation-btn" data-index="${index}"><i class="fa-solid fa-pen"></i> Editar</button>
-                            <button class="btn btn-sm btn-danger cancel-reservation-btn" data-index="${index}"><i class="fa-solid fa-xmark"></i> Cancelar</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+            document.getElementById('active-reservations-list').innerHTML = reservations.active.map(r => createReservationItemHTML(r, true)).join('');
+            document.getElementById('past-reservations-list').innerHTML = reservations.past.map(r => createReservationItemHTML(r, false)).join('');
+            document.getElementById('profile-visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
+        };
 
-            DOMElements.profile.activeReservations.innerHTML = reservations.active.map((r, index) => createReservationItem(r, index, true)).join('');
-            DOMElements.profile.pastReservations.innerHTML = reservations.past.map(r => createReservationItem(r)).join('');
-            DOMElements.profile.visitHistoryList.innerHTML = visitHistory.length ? visitHistory.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') : '<p>No tienes visitas registradas.</p>';
+        // ===================================================================
+        // 6. LÓGICA Y MANEJADORES DE LA APLICACIÓN
+        // ===================================================================
 
-            document.querySelectorAll('.edit-reservation-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    editReservation(index);
-                });
-            });
-            document.querySelectorAll('.cancel-reservation-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    cancelReservation(index);
-                });
-            });
+        const showPage = (pageId) => {
+            state.currentPage = pageId;
+            DOMElements.pages.forEach(p => p.classList.toggle('active', p.id === pageId));
+            DOMElements.navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId));
+            updateUI();
         };
         
         const updateUI = () => {
             const loggedIn = state.isLoggedIn;
             DOMElements.logoutButtons.forEach(btn => btn.classList.toggle('hidden', !loggedIn));
-            if (state.currentPage === 'fidelizacion') {
-                DOMElements.loyalty.loggedIn.classList.toggle('hidden', !loggedIn); DOMElements.loyalty.loggedOut.classList.toggle('hidden', loggedIn);
-                if (loggedIn) renderLoyaltyPage();
-            } else if (state.currentPage === 'perfil') {
-                DOMElements.profile.loggedIn.classList.toggle('hidden', !loggedIn); DOMElements.profile.loggedOut.classList.toggle('hidden', loggedIn);
-                if (loggedIn) renderProfilePage();
-            }
+
+            DOMElements.loyalty.loggedIn.classList.toggle('hidden', !loggedIn);
+            DOMElements.loyalty.loggedOut.classList.toggle('hidden', loggedIn);
+            if (loggedIn && state.currentPage === 'fidelizacion') renderLoyaltyPage();
+
+            DOMElements.profile.loggedIn.classList.toggle('hidden', !loggedIn);
+            DOMElements.profile.loggedOut.classList.toggle('hidden', loggedIn);
+            if (loggedIn && state.currentPage === 'perfil') renderProfilePage();
         };
 
-        // ===================================================================
-        // LÓGICA DE LA APLICACIÓN
-        // ===================================================================
-        const showPage = (pageId) => { state.currentPage = pageId; DOMElements.pages.forEach(p => p.classList.toggle('active', p.id === pageId)); DOMElements.navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId)); updateUI(); };
-        const login = () => { state.isLoggedIn = true; state.userData = JSON.parse(JSON.stringify(state.loggedInUserData)); toggleModal('auth-modal', false); showToast('¡Inicio de sesión exitoso!', 'success'); updateUI(); };
-        const logout = () => { state.isLoggedIn = false; state.userData = {}; showToast('Sesión cerrada correctamente.'); if(['fidelizacion', 'perfil'].includes(state.currentPage)) showPage('inicio'); else updateUI(); };
-        const showItemDetail = (item) => { DOMElements.menuItemModal.content.innerHTML = `<div class="modal-header"><h2 class="modal-title">${item.name}</h2><button class="close-modal" data-target="menu-item-modal">×</button></div><img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;"><p>${item.desc}</p><div style="font-size:20px; font-weight:bold; color:var(--primary-color);">$${item.price.toLocaleString()}</div>`; DOMElements.menuItemModal.content.querySelector('.close-modal').addEventListener('click', () => toggleModal('menu-item-modal', false)); toggleModal('menu-item-modal', true); };
-        const toggleQRCamera = () => {
-            state.qrCameraActive = !state.qrCameraActive; const active = state.qrCameraActive;
-            DOMElements.loyalty.qrButton.innerHTML = active ? '<i class="fa-solid fa-xmark"></i> Cancelar' : '<i class="fa-solid fa-qrcode"></i> Registrar Visita';
-            DOMElements.loyalty.qrButton.classList.toggle('btn-danger', active); DOMElements.loyalty.qrButton.classList.toggle('btn-success', !active);
-            DOMElements.loyalty.qrCamera.classList.toggle('hidden', !active);
-            DOMElements.loyalty.visitForm.classList.toggle('hidden', !active);
+        const login = () => {
+            state.isLoggedIn = true;
+            state.userData = JSON.parse(JSON.stringify(state.loggedInUserDataTemplate)); // Deep copy
+            toggleModal('auth-modal', false);
+            showToast('¡Inicio de sesión exitoso!', 'success');
+            updateUI();
         };
-        const registerVisit = () => {
-            const reason = document.getElementById('loyalty-visit-reason-select').value;
-            const date = new Date().toISOString().split('T')[0];
-            state.userData.visitHistory.unshift({ date, reason });
-
-            state.userData.stars++;
-            if (state.userData.stars >= 5) {
-                state.userData.stars = 0;
-                state.userData.benefits.used.unshift({ name: '40% Descuento 5 Estrellas', date });
-                showToast('¡Felicidades, ganaste un descuento! Tus estrellas se reiniciaron.', 'success');
+        
+        const logout = () => {
+            state.isLoggedIn = false;
+            state.userData = {};
+            showToast('Sesión cerrada correctamente.');
+            if (['fidelizacion', 'perfil'].includes(state.currentPage)) {
+                showPage('inicio');
             } else {
-                showToast(`¡Visita registrada! Ahora tienes ${state.userData.stars} estrella(s).`);
+                updateUI();
             }
-            toggleQRCamera(); renderLoyaltyPage();
         };
+
         const setProfileEditMode = (isEditing) => {
-            DOMElements.profile.dataDisplay.classList.toggle('hidden', isEditing);
-            DOMElements.profile.form.classList.toggle('edit-mode', isEditing);
-            Object.values(DOMElements.profile.buttons).forEach(btn => btn.classList.add('hidden'));
-            if(isEditing) {
-                DOMElements.profile.buttons.save.classList.remove('hidden'); DOMElements.profile.buttons.cancel.classList.remove('hidden');
-                DOMElements.profile.buttons.delete.classList.remove('hidden');
-                DOMElements.profile.form.innerHTML = generateUserFieldsHTML(true, state.userData) + `<div class="form-group" style="display:flex; align-items:center; justify-content:space-between;"><label>Mensajes Promocionales</label><label class="switch"><input type="checkbox" id="field-promo" ${state.userData.promoMessages ? 'checked' : ''}><span class="slider"></span></label></div>`;
-            } else {
-                DOMElements.profile.buttons.edit.classList.remove('hidden');
+            document.getElementById('profile-data-display').classList.toggle('hidden', isEditing);
+            const form = document.getElementById('profile-form');
+            form.classList.toggle('edit-mode', isEditing);
+            
+            // Ocultar todos los botones y luego mostrar los correctos
+            document.getElementById('edit-profile-button').classList.toggle('hidden', isEditing);
+            document.getElementById('save-profile-button').classList.toggle('hidden', !isEditing);
+            document.getElementById('cancel-edit-button').classList.toggle('hidden', !isEditing);
+            document.getElementById('delete-account-button').classList.toggle('hidden', !isEditing);
+
+            if (isEditing) {
+                form.innerHTML = generateUserFieldsHTML(true, state.userData) + 
+                    `<div class="form-group" style="display:flex; align-items:center; justify-content:space-between;">
+                        <label>Mensajes Promocionales</label>
+                        <label class="switch"><input type="checkbox" id="field-promo" ${state.userData.promoMessages ? 'checked' : ''}><span class="slider"></span></label>
+                    </div>`;
             }
         };
-        const saveProfile = () => {
+
+        // ===================================================================
+        // 7. HUB CENTRAL DE MANEJO DE EVENTOS (DELEGACIÓN)
+        // ===================================================================
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // --- Delegación para Modales ---
+            const modalActionTarget = target.closest('[data-modal-action]');
+            if (modalActionTarget) {
+                const action = modalActionTarget.dataset.modalAction;
+                const modalId = modalActionTarget.dataset.modalTarget || modalActionTarget.closest('.modal')?.id;
+                if (modalId) {
+                    toggleModal(modalId, action === 'open');
+                }
+            }
+
+            // --- Delegación para Navegación Principal ---
+            const navItem = target.closest('.nav-item[data-page]');
+            if (navItem) {
+                showPage(navItem.dataset.page);
+                return;
+            }
+            
+            // --- Delegación para Acciones Rápidas ---
+            const quickAction = target.closest('.quick-action[data-page]');
+            if (quickAction) {
+                showPage(quickAction.dataset.page);
+                return;
+            }
+
+            // --- Delegación para Pestañas (Tabs) ---
+            const tabButton = target.closest('.tab-button[data-tab]');
+            if (tabButton) {
+                const tabId = tabButton.dataset.tab;
+                const container = tabButton.closest('.tabs').parentNode;
+                container.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
+                tabButton.classList.add('active');
+                container.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}` || c.id === tabId));
+                return;
+            }
+
+            // --- Delegación para Items del Menú ---
+            const menuItem = target.closest('.menu-item[data-item-id]');
+            if (menuItem) {
+                const { category, itemId } = menuItem.dataset;
+                const item = state.menuData[category]?.find(i => i.id === parseInt(itemId));
+                if (item) {
+                    const modalContent = document.getElementById('menu-item-modal-content');
+                    modalContent.innerHTML = `
+                        <div class="modal-header">
+                            <h2 class="modal-title">${item.name}</h2>
+                            <button class="close-modal" data-modal-action="close">×</button>
+                        </div>
+                        <img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;" onerror="this.src='https://placehold.co/380x180/cccccc/ffffff?text=Imagen'">
+                        <p>${item.desc}</p>
+                        <div style="font-size:20px; font-weight:bold; color:var(--primary-color);">$${item.price.toLocaleString('es-CL')}</div>`;
+                    toggleModal('menu-item-modal', true);
+                }
+                return;
+            }
+            
+            // --- Delegación para botones de Logout ---
+            if (target.closest('[id$="-logout-btn"]')) {
+                logout();
+                return;
+            }
+            
+            // --- Delegación para acciones de Perfil ---
+            if (target.closest('#edit-profile-button')) setProfileEditMode(true);
+            if (target.closest('#save-profile-button')) { /* La lógica está en el submit del form */ }
+            if (target.closest('#cancel-edit-button')) setProfileEditMode(false);
+            
+            // --- Delegación para acciones de Reservas en Perfil ---
+            const reservationItem = target.closest('.reservation-item[data-id]');
+            if (reservationItem) {
+                const reservationId = reservationItem.dataset.id;
+                const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
+
+                if (target.closest('.edit-reservation-btn') && reservation) {
+                    document.getElementById('edit-reservation-id').value = reservation.id;
+                    document.getElementById('edit-reservation-date').value = reservation.date;
+                    document.getElementById('edit-reservation-time').value = reservation.time;
+                    document.getElementById('edit-reservation-guests').value = reservation.guests;
+                    document.getElementById('edit-reservation-place').value = reservation.place;
+                    toggleModal('edit-reservation-modal', true);
+                } else if (target.closest('.cancel-reservation-btn') && reservation) {
+                    const [cancelled] = state.userData.reservations.active.splice(state.userData.reservations.active.indexOf(reservation), 1);
+                    cancelled.status = 'cancelada';
+                    state.userData.reservations.past.unshift(cancelled);
+                    renderProfilePage();
+                    showToast('Reserva cancelada.', 'danger');
+                }
+            }
+            
+            // --- Delegación para botones de Fidelidad ---
+            const benefitBtn = target.closest('.use-benefit-btn[data-name]');
+            if (benefitBtn) {
+                const qrContainer = document.getElementById('qr-code-container');
+                qrContainer.innerHTML = ''; // Limpiar QR anterior
+                
+                const textToEncode = 'Beneficio: ' + benefitBtn.dataset.name;
+                state.qrCodeInstance = new QRCode(qrContainer, {
+                    text: textToEncode,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                toggleModal('qr-benefit-modal', true);
+            }
+            if (target.closest('#qr-button')) {
+                state.qrCameraActive = !state.qrCameraActive;
+                const active = state.qrCameraActive;
+                const qrButton = document.getElementById('qr-button');
+                qrButton.innerHTML = active ? '<i class="fa-solid fa-xmark"></i> Cancelar' : '<i class="fa-solid fa-qrcode"></i> Registrar Visita';
+                qrButton.classList.toggle('btn-danger', active);
+                qrButton.classList.toggle('btn-success', !active);
+                document.getElementById('qr-camera').classList.toggle('hidden', !active);
+                document.getElementById('visit-form').classList.toggle('hidden', !active);
+            }
+            if (target.closest('#confirm-visit-btn')) {
+                const reason = document.getElementById('loyalty-visit-reason-select').value;
+                const date = new Date().toISOString().split('T')[0];
+                state.userData.visitHistory.unshift({ date, reason });
+                state.userData.stars++;
+                if (state.userData.stars >= 5) {
+                    state.userData.stars = 0;
+                    state.userData.benefits.current.push({ name: '40% Descuento 5 Estrellas', expiry: 'Válido por 30 días', id: 'b' + Date.now() });
+                    showToast('¡Felicidades, ganaste un descuento! Tus estrellas se reiniciaron.', 'success');
+                } else {
+                    showToast(`¡Visita registrada! Ahora tienes ${state.userData.stars} estrella(s).`);
+                }
+                document.getElementById('qr-button').click(); // Simula click en cancelar para cerrar la vista
+                renderLoyaltyPage();
+            }
+
+            // --- Delegación para cargar datos en formulario de reserva ---
+            if (target.closest('#load-my-data-btn')) {
+                if (!state.isLoggedIn) {
+                    showToast('Debes iniciar sesión para cargar tus datos.', 'warning');
+                    toggleModal('auth-modal', true);
+                    return;
+                }
+                document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.userData);
+                showToast('Datos cargados.', 'success');
+            }
+        });
+
+        // ===================================================================
+        // 8. MANEJO DE EVENTOS DIRECTOS (FORMS, INPUTS)
+        // ===================================================================
+
+        // --- Filtro de categoría de menú ---
+        DOMElements.categoryFilter.addEventListener('change', (e) => renderMenu(e.target.value));
+
+        // --- Formularios de Autenticación ---
+        document.getElementById('login-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); });
+        document.getElementById('register-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); /* Simulación */ });
+        
+        // --- Formulario de Perfil ---
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
             state.userData.nombre = document.getElementById('field-nombre').value;
             state.userData.apellidos = document.getElementById('field-apellidos').value;
             state.userData.email = document.getElementById('field-email').value;
@@ -584,122 +825,77 @@
             state.userData.comuna = document.getElementById('field-comuna').value;
             state.userData.instagram = document.getElementById('field-instagram').value;
             state.userData.promoMessages = document.getElementById('field-promo').checked;
-            renderProfilePage(); setProfileEditMode(false); showToast('Datos guardados.', 'success');
-        };
+            renderProfilePage();
+            setProfileEditMode(false);
+            showToast('Datos guardados con éxito.', 'success');
+        });
 
-        const editReservation = (index) => {
-            const reservation = state.userData.reservations.active[index];
-            if (reservation) {
-                DOMElements.editReservationModal.indexInput.value = index;
-                DOMElements.editReservationModal.dateInput.value = reservation.date;
-                DOMElements.editReservationModal.timeSelect.value = reservation.time;
-                DOMElements.editReservationModal.guestsInput.value = reservation.guests;
-                DOMElements.editReservationModal.placeSelect.value = reservation.place;
-                toggleModal('edit-reservation-modal', true);
+        // --- Formulario de Reserva ---
+        document.getElementById('reservation-form').addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            const newReservation = {
+                id: 'res' + Date.now(),
+                date: document.getElementById('reservation-date').value,
+                time: document.getElementById('reservation-time').value,
+                guests: parseInt(document.getElementById('reservation-guests').value),
+                place: document.getElementById('reservation-place').value,
+                status: 'confirmada'
+            };
+            if (state.isLoggedIn) {
+                state.userData.reservations.active.unshift(newReservation);
+                if(state.currentPage === 'perfil') renderProfilePage();
             }
-        };
+            showToast('¡Reserva confirmada!', 'success'); 
+            e.target.reset(); 
+            document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.isLoggedIn ? state.userData : {}); 
+        });
 
-        const saveEditedReservation = (e) => {
+        // --- Formulario de Edición de Reserva ---
+        document.getElementById('edit-reservation-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const index = parseInt(DOMElements.editReservationModal.indexInput.value);
-            if (index >= 0 && index < state.userData.reservations.active.length) {
-                state.userData.reservations.active[index] = {
-                    ...state.userData.reservations.active[index],
-                    date: DOMElements.editReservationModal.dateInput.value,
-                    time: DOMElements.editReservationModal.timeSelect.value,
-                    guests: parseInt(DOMElements.editReservationModal.guestsInput.value),
-                    place: DOMElements.editReservationModal.placeSelect.value,
-                };
+            const reservationId = document.getElementById('edit-reservation-id').value;
+            const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
+            if (reservation) {
+                reservation.date = document.getElementById('edit-reservation-date').value;
+                reservation.time = document.getElementById('edit-reservation-time').value;
+                reservation.guests = parseInt(document.getElementById('edit-reservation-guests').value);
+                reservation.place = document.getElementById('edit-reservation-place').value;
                 renderProfilePage();
                 toggleModal('edit-reservation-modal', false);
                 showToast('Reserva actualizada.', 'success');
             }
-        };
-
-        const cancelReservation = (index) => {
-            if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
-                const [cancelledReservation] = state.userData.reservations.active.splice(index, 1);
-                cancelledReservation.status = 'cancelada';
-                state.userData.reservations.past.unshift(cancelledReservation);
-                renderProfilePage();
-                showToast('Reserva cancelada.', 'info');
-            }
-        };
-
-        // ===================================================================
-        // MANEJO DE EVENTOS
-        // ===================================================================
-        DOMElements.navItems.forEach(item => item.addEventListener('click', () => showPage(item.dataset.page)));
-        DOMElements.logoutButtons.forEach(btn => btn.addEventListener('click', logout));
-        document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => toggleModal(btn.dataset.target, false)));
-        document.querySelectorAll('.tab-button').forEach(btn => btn.addEventListener('click', (e) => {
-            const tabId = e.currentTarget.dataset.tab;
-            const container = e.currentTarget.closest('.tabs').parentNode;
-            container.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            container.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}` || c.id === tabId));
-        }));
+        });
         
-        DOMElements.auth.loginForm.addEventListener('submit', (e) => { e.preventDefault(); login(); });
-        DOMElements.auth.registerForm.addEventListener('submit', (e) => { e.preventDefault(); login(); }); // Simulación
-        document.getElementById('loyalty-login-btn').addEventListener('click', () => toggleModal('auth-modal', true));
-        document.getElementById('profile-login-btn').addEventListener('click', () => toggleModal('auth-modal', true));
-        DOMElements.categoryFilter.addEventListener('change', (e) => renderMenu(e.target.value));
-
-        DOMElements.loyalty.qrButton.addEventListener('click', toggleQRCamera);
-        DOMElements.loyalty.confirmVisitBtn.addEventListener('click', registerVisit);
-        
-        DOMElements.profile.buttons.edit.addEventListener('click', () => setProfileEditMode(true));
-        DOMElements.profile.buttons.cancel.addEventListener('click', () => setProfileEditMode(false));
-        DOMElements.profile.buttons.save.addEventListener('click', saveProfile);
-        DOMElements.profile.buttons.delete.addEventListener('click', () => toggleModal('delete-confirm-modal', true));
-        DOMElements.deleteConfirm.input.addEventListener('input', e => { DOMElements.deleteConfirm.button.disabled = e.target.value !== 'Eliminar'; });
-        DOMElements.deleteConfirm.button.addEventListener('click', () => { toggleModal('delete-confirm-modal', false); logout(); });
-        
-        DOMElements.reservations.form.addEventListener('submit', (e) => { 
-            e.preventDefault(); 
-            const newReservation = {
-                id: 'res' + Date.now(), // Unique ID for the new reservation
-                date: DOMElements.reservations.dateInput.value,
-                time: DOMElements.reservations.timeSelect.value,
-                guests: parseInt(DOMElements.reservations.guestsInput.value),
-                place: DOMElements.reservations.placeSelect.value,
-                status: 'confirmada' // New reservations are confirmed by default
-            };
-
-            if (state.isLoggedIn) {
-                state.userData.reservations.active.unshift(newReservation);
-                renderProfilePage(); // Re-render profile to show new reservation
-            }
-            showToast('¡Reserva confirmada!', 'success'); 
-            e.target.reset(); 
-            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true); 
+        // --- Input de confirmación para eliminar cuenta ---
+        document.getElementById('delete-confirm-input').addEventListener('input', e => { 
+            document.getElementById('final-delete-button').disabled = e.target.value !== 'Eliminar'; 
+        });
+        document.getElementById('final-delete-button').addEventListener('click', () => { 
+            toggleModal('delete-confirm-modal', false); 
+            logout(); 
         });
 
-        DOMElements.reservations.loadDataBtn.addEventListener('click', () => {
-            if(!state.isLoggedIn) { showToast('Debes iniciar sesión para cargar tus datos.'); toggleModal('auth-modal', true); return; }
-            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true, state.userData);
-        });
-
-        DOMElements.editReservationModal.form.addEventListener('submit', saveEditedReservation);
-
-        const toggleModal = (modalId, show) => document.getElementById(modalId)?.classList.toggle('visible', show);
-        const showToast = (message, type = 'info') => { const toast = document.createElement('div'); toast.textContent = message; toast.style.cssText = `padding: 12px 20px; border-radius: 8px; color: white; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity:0; transition: all 0.3s; transform: translateY(-20px); background-color: ${type === 'success' ? 'var(--success-color)' : type === 'danger' ? 'var(--danger-color)' : 'var(--primary-color)'};`; document.getElementById('toast-container').appendChild(toast); setTimeout(() => { toast.style.opacity = 1; toast.style.transform = 'translateY(0)'; }, 10); setTimeout(() => { toast.style.opacity = 0; setTimeout(() => toast.remove(), 300); }, 3000); };
-        
         // ===================================================================
-        // INICIALIZACIÓN
+        // 9. INICIALIZACIÓN DE LA APLICACIÓN
         // ===================================================================
         const init = () => {
-            Object.keys(state.menuData).forEach(cat => DOMElements.categoryFilter.innerHTML += `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`);
-            document.querySelectorAll('.quick-action').forEach(el => el.addEventListener('click', () => showPage(el.dataset.page)));
-            DOMElements.auth.registerForm.innerHTML = generateUserFieldsHTML(true) + '<button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>';
-            // Initial render of user fields for reservation form (empty if not logged in)
-            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true, state.isLoggedIn ? state.userData : {});
-            DOMElements.loyalty.visitReasonContainer.innerHTML = generateVisitReasonSelectHTML('loyalty-visit-reason-select');
-            DOMElements.reservations.visitReasonContainer.innerHTML = generateVisitReasonSelectHTML('reservation-visit-reason-select');
-            renderMenu(); // Call renderMenu here to populate the menu
+            // Poblar filtro de categorías
+            Object.keys(state.menuData).forEach(cat => {
+                DOMElements.categoryFilter.innerHTML += `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`;
+            });
+
+            // Preparar formularios
+            document.getElementById('register-form-tab').innerHTML = generateUserFieldsHTML(true) + '<button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>';
+            document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true);
+            document.getElementById('loyalty-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('loyalty-visit-reason-select');
+            document.getElementById('reservation-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('reservation-visit-reason-select');
+            
+            // Renderizado inicial
+            renderMenu();
             showPage('inicio');
+            console.log("GastroHub App inicializada y optimizada.");
         };
+
         init();
     });
     </script>
