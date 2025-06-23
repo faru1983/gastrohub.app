@@ -3,633 +3,705 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GastroHub - Gestión para Restaurantes</title><link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Roboto) -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Vue.js -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FF6B35',
-                        secondary: '#4A4E69',
-                        accent: '#2A9D8F',
-                        dark: '#1E1E24',
-                        light: '#F7F9F9'
-                    },
-                    fontFamily: {
-                        'sans': ['Roboto', 'sans-serif']
-                    }
-                }
-            }
+    <title>GastroHub App Optimizada</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" type="image/png">
+    <style>
+        /* Estilos Generales y Reseteo */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333;
+            --medium-gray: #666;
+            --border-color: #e0e0e0;
+            --success-color: #4CAF50;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --pending-color: #ffc107;
         }
-    </script>
-    <link rel="stylesheet" href="styles.css">
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        .content { padding: 20px; display: none; }
+        .content.active { display: block; animation: fadeIn 0.5s; }
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Navegación Inferior */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 420px; background: white;
+            border-top: 1px solid var(--border-color); display: flex;
+            justify-content: space-around; padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 5px; cursor: pointer; transition: all 0.3s ease;
+            border-radius: 12px; min-width: 60px; color: var(--medium-gray);
+        }
+        .nav-item.active, .nav-item:hover {
+            background: var(--primary-gradient); color: white; transform: translateY(-2px);
+        }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+        .nav-label { font-size: 10px; font-weight: 500; }
+
+        /* Componentes y Formularios */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-title {
+            font-size: 28px; font-weight: bold; background: var(--primary-gradient);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            flex-grow: 1; text-align: center;
+        }
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 10px; font-size: 16px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 8px;
+            text-decoration: none; justify-content: center;
+        }
+        .btn-primary { background: var(--primary-gradient); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #f5f5f5; color: var(--dark-gray); }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-sm { padding: 8px 12px; font-size: 14px; }
+        .btn-full { width: 100%; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 500; color: var(--dark-gray); }
+        .form-input {
+            width: 100%; padding: 12px; border: 2px solid var(--border-color);
+            border-radius: 10px; font-size: 16px; transition: border-color 0.3s ease;
+        }
+        .form-input:focus { outline: none; border-color: var(--primary-color); }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+        
+        /* Pestañas */
+        .tabs { display: flex; margin-bottom: 20px; border-radius: 10px; overflow: hidden; background: #f5f5f5; }
+        .tab-button {
+            flex: 1; padding: 12px; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; font-weight: 500; border: none; background: none;
+        }
+        .tab-button.active { background: var(--primary-gradient); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Modales */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal.visible { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 20px; width: 90%;
+            max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .modal.visible .modal-content { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 24px; font-weight: bold; color: var(--primary-color); }
+        .close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+        
+        /* Estilos específicos de Páginas */
+        .restaurant-banner {
+            width: 100%; height: 200px;
+            background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=400&fit=crop') center/cover;
+            border-radius: 15px; margin-bottom: 20px; position: relative;
+        }
+        .restaurant-logo {
+            position: absolute; bottom: -30px; left: 20px; width: 80px; height: 80px;
+            background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200&h=200&fit=crop') center/cover;
+            border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .restaurant-info { margin-top: 50px; padding: 20px; background: var(--light-gray); border-radius: 15px; }
+        .contact-item { display: flex; align-items: center; gap: 10px; color: #555; margin-bottom: 8px; }
+        .social-links { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        .social-link {
+            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none; font-size: 20px; transition: transform 0.3s ease;
+        }
+        .social-link:hover { transform: scale(1.1); }
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .quick-action {
+            padding: 20px; background: white; border-radius: 15px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;
+            text-decoration: none; color: var(--dark-gray);
+        }
+        .quick-action:hover { transform: translateY(-5px); }
+        .quick-action-icon { font-size: 30px; margin-bottom: 10px; color: var(--primary-color); }
+        .google-rating {
+            display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px;
+            background: white; border-radius: 10px; margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s ease;
+        }
+        .google-rating:hover { transform: translateY(-2px); }
+        .rating-stars { color: #fbbc05; }
+        .footer { text-align:center; color: #888; font-size: 12px; margin-top: 20px;}
+        .footer a { color: var(--primary-color); text-decoration: none;}
+
+        .menu-category { margin-bottom: 30px; }
+        .category-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 5px; }
+        .menu-item { display: flex; gap: 15px; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; }
+        .menu-item-image { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
+        .price-current { font-weight: bold; color: var(--primary-color); }
+        .price-original { text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px; }
+
+        .loyalty-info { text-align: center; padding: 30px 20px; background: var(--primary-gradient); color: white; border-radius: 20px; margin-bottom: 20px; }
+        .stars-display { font-size: 30px; margin: 15px 0; letter-spacing: 5px; color: var(--warning-color); }
+        .stars-display .fa-star.inactive { color: rgba(255, 255, 255, 0.4); }
+        #stars-count-text { margin-top: 5px; font-weight: 500; }
+        .qr-camera { text-align: center; padding: 20px; background: var(--light-gray); border-radius: 10px; border: 2px dashed var(--primary-color); }
+
+        .benefit-item, .history-item, .reservation-item {
+            background: var(--light-gray); border-radius: 10px; margin-bottom: 12px;
+            padding: 12px 15px;
+        }
+        .reservation-item-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        .status-confirmada { background-color: var(--success-color); }
+        .status-pendiente { background-color: var(--pending-color); color: var(--dark-gray);}
+        .status-cancelada { background-color: var(--danger-color); }
+
+
+        #profile-data-display p { margin: 0 0 12px; color: var(--medium-gray); line-height: 1.4; }
+        #profile-data-display strong { font-weight: 600; color: var(--dark-gray); display: block; margin-bottom: 2px; font-size: 14px; }
+        #profile-form { display: none; }
+        #profile-form.edit-mode { display: block; }
+        #delete-account-button { margin-top: 30px; }
+        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .reservation-actions button { margin-left: 10px; }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <div id="app" class="min-h-screen">
-        <!-- Barra de navegación superior (solo escritorio) -->
-        <header class="hidden md:flex bg-white shadow-md py-4 px-6 items-center justify-between">
-            <div class="flex items-center">
-                <i class="fas fa-utensils text-primary text-2xl mr-3"></i>
-                <h1 class="text-xl font-bold text-secondary">GastroHub</h1>
-            </div>
-            <nav class="flex space-x-8">
-                <button v-for="tab in tabs" :key="tab.id" 
-                    @click="currentTab = tab.id" 
-                    :class="{'nav-active': currentTab === tab.id, 'text-gray-600': currentTab !== tab.id}"
-                    class="font-medium flex items-center hover:text-primary transition-colors">
-                    <i :class="tab.icon" class="mr-2"></i>
-                    {{ tab.name }}
-                </button>
-            </nav>
-        </header>
+<body>
+    <div class="app-container">
+        <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000;"></div>
 
-        <!-- Contenido principal -->
-        <main class="container mx-auto px-4 pb-20 md:pb-0">
-            <!-- Pestaña: Inicio -->
-            <div v-if="currentTab === 'inicio'" class="pt-4">
-                <div class="banner rounded-xl overflow-hidden mb-6">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&h=400&q=80" 
-                         alt="Restaurante El Buen Sabor" 
-                         class="w-full h-full object-cover">
-                </div>
-                
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl md:text-4xl font-bold text-secondary mb-2">El Buen Sabor</h1>
-                    <p class="text-gray-600 max-w-2xl mx-auto mb-4">Restaurante de comida internacional con los mejores sabores preparados por nuestros chefs expertos. Disfruta de una experiencia gastronómica única.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <div class="flex items-center justify-center text-gray-600">
-                            <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
-                            Av. Siempre Viva 742, Springfield
-                        </div>
-                        <div class="flex items-center justify-center text-gray-600">
-                            <i class="fas fa-clock mr-2 text-primary"></i>
-                            Lunes a Sábado: 12:00 - 23:00
-                        </div>
-                        <div class="flex items-center justify-center text-gray-600">
-                            <i class="fas fa-phone mr-2 text-primary"></i>
-                            +56 9 1234 5678
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-center space-x-4 mb-8">
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <i class="fab fa-facebook text-2xl"></i>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <i class="fab fa-instagram text-2xl"></i>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <i class="fab fa-tiktok text-2xl"></i>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <i class="fab fa-whatsapp text-2xl"></i>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <i class="fas fa-envelope text-2xl"></i>
-                        </a>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <button @click="currentTab = 'carta'" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col items-center">
-                            <i class="fas fa-book-open text-4xl text-primary mb-4"></i>
-                            <h3 class="text-lg font-semibold text-secondary mb-2">Ver Carta</h3>
-                            <p class="text-gray-600 text-sm">Explora nuestro delicioso menú</p>
-                        </button>
-                        <button @click="currentTab = 'fidelizacion'" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col items-center">
-                            <i class="fas fa-trophy text-4xl text-primary mb-4"></i>
-                            <h3 class="text-lg font-semibold text-secondary mb-2">Programa Fidelidad</h3>
-                            <p class="text-gray-600 text-sm">Gana premios con cada visita</p>
-                        </button>
-                        <button @click="currentTab = 'reservas'" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col items-center">
-                            <i class="fas fa-calendar-check text-4xl text-primary mb-4"></i>
-                            <h3 class="text-lg font-semibold text-secondary mb-2">Reservar Mesa</h3>
-                            <p class="text-gray-600 text-sm">Garantiza tu lugar con anticipación</p>
-                        </button>
-                    </div>
-                    
-                    <p class="text-gray-500 text-sm mt-12">
-                        Sitio potenciado por <a href="https://gastrohub.app" target="_blank" class="text-primary hover:underline">GastroHub App</a>
-                    </p>
+        <div id="inicio" class="content active">
+            <div class="restaurant-banner"><div class="restaurant-logo"></div></div>
+            <div class="restaurant-info">
+                <h1 style="font-size: 24px; font-weight: bold; color: var(--dark-gray);">Restaurante El Sabor</h1>
+                <p style="color: var(--medium-gray); margin: 10px 0; line-height: 1.5;">Cocina mediterránea moderna con ingredientes frescos y locales.</p>
+                <div class="contact-info">
+                    <div class="contact-item"><i class="fa-solid fa-location-dot fa-fw" style="color: var(--primary-color);"></i><span>Av. Providencia 1234, Santiago</span></div>
+                    <div class="contact-item"><i class="fa-solid fa-clock fa-fw" style="color: var(--primary-color);"></i><span>Lun-Dom: 18:00 - 23:00</span></div>
+                    <div class="contact-item"><i class="fa-solid fa-phone fa-fw" style="color: var(--primary-color);"></i><span>+56 9 1234 5678</span></div>
                 </div>
             </div>
+            <div class="google-rating" onclick="window.open('https://maps.google.com', '_blank')">
+                <i class="fab fa-google" style="color: #4285f4;"></i>
+                <span class="rating-stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span><strong>4.8</strong> en Google</span>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link" style="background: #3b5998;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link" style="background: #000;"><i class="fab fa-tiktok"></i></a>
+                <a href="#" class="social-link" style="background: #25d366;"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <div class="quick-actions" id="quick-actions-container">
+                <div class="quick-action" data-page="carta"><div class="quick-action-icon"><i class="fa-solid fa-utensils"></i></div><div>Carta</div></div>
+                <div class="quick-action" data-page="reservas"><div class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></div><div>Reservas</div></div>
+                <div class="quick-action" data-page="fidelizacion"><div class="quick-action-icon"><i class="fa-solid fa-star"></i></div><div>Fidelidad</div></div>
+            </div>
+            <div class="footer">Sitio potenciado por <a href="https://gastrohub.app" target="_blank">GastroHub App</a></div>
+        </div>
 
-            <!-- Pestaña: Carta -->
-            <div v-if="currentTab === 'carta'" class="pt-4">
-                <h1 class="text-3xl font-bold text-secondary mb-6 text-center">Nuestra Carta</h1>
-                
-                <div class="sticky-categories mb-6 flex flex-wrap justify-center gap-2">
-                    <!-- Solo visible en escritorio -->
-                    <div class="hidden md:flex w-full justify-center gap-2">
-                        <button v-for="category in categories" :key="category.id"
-                            @click="selectedCategory = category.id"
-                            :class="{'bg-primary text-white': selectedCategory === category.id, 'bg-gray-200 text-gray-700': selectedCategory !== category.id}"
-                            class="px-4 py-2 rounded-full text-sm font-medium transition-colors">
-                            {{ category.name }}
-                        </button>
-                    </div>
-                    <!-- Solo visible en móvil -->
-                    <div class="w-full md:hidden">
-                        <select v-model="selectedCategory" class="w-full px-4 py-2 rounded-full border border-gray-300 text-sm font-medium">
-                            <option v-for="category in categories" :key="category.id" :value="category.id">
-                                {{ category.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div v-for="product in filteredProducts" :key="product.id" 
-                         class="product-card bg-white rounded-xl shadow-md overflow-hidden">
-                        <div @click="openImageModal(product.image)" class="cursor-pointer">
-                            <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover">
-                        </div>
-                        <div class="p-4">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-lg font-semibold text-secondary">{{ product.name }}</h3>
-                                <span class="text-primary font-bold">${{ product.price.toLocaleString('es-CL') }}</span>
-                            </div>
-                            <p class="text-gray-600 text-sm mb-4">{{ product.description }}</p>
-                            <div class="flex justify-between">
-                                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">{{ product.category }}</span>
-                            </div>
-                        </div>
-                    </div>
+        <div id="carta" class="content">
+            <div class="page-header"><h1 class="page-title">Nuestra Carta</h1></div>
+            <div class="form-group"><select class="form-input" id="category-filter"><option value="all">Todas las categorías</option></select></div>
+            <div id="menu-container"></div>
+        </div>
+
+        <div id="fidelizacion" class="content">
+            <div class="page-header"><h1 class="page-title">Fidelidad</h1><button id="fidelizacion-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <div id="loyalty-logged-out">
+                <div class="loyalty-info">
+                    <h2>¡Únete a nuestro programa!</h2><p>¡Junta 5 estrellas y obtén un 40% de descuento!</p>
+                    <div class="stars-display"><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></div>
+                    <button class="btn btn-primary btn-full" id="loyalty-login-btn"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
                 </div>
             </div>
-
-            <!-- Pestaña: Fidelización -->
-            <div v-if="currentTab === 'fidelizacion'" class="pt-4">
-                <h1 class="text-3xl font-bold text-secondary mb-6 text-center">Programa de Fidelización</h1>
-                
-                <div v-if="!isLoggedIn" class="bg-white rounded-xl shadow-md p-6 max-w-2xl mx-auto">
-                    <div class="text-center mb-6">
-                        <div class="flex justify-center mb-4">
-                            <div class="bg-gray-100 p-4 rounded-full">
-                                <i class="fas fa-trophy text-4xl text-primary"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 mb-6 text-lg font-medium bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                            <i class="fas fa-gift text-yellow-500 mr-2"></i> ¡Cada visita cuenta! Escanea el código QR con tu garzón y acumula puntos. 
-                            <span class="font-bold text-primary">¡Junta 5 visitas y obtén un 40% de descuento en tu próxima cena!</span> 
-                            (Descuento máximo de $50.000)
-                        </p>
-                        
-                        <div class="flex justify-center space-x-4 mb-6">
-                            <div v-for="n in 5" :key="n" class="bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center">
-                                <i v-if="n <= 3" class="fas fa-star text-yellow-400"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col md:flex-row justify-center gap-4">
-                            <button @click="showLoginModal = true" class="bg-primary text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors flex items-center">
-                                <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
-                            </button>
-                            <button @click="showRegisterModal = true" class="bg-secondary text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors flex items-center">
-                                <i class="fas fa-user-plus mr-2"></i> Registrarse
-                            </button>
-                        </div>
-                    </div>
+            <div id="loyalty-logged-in" class="hidden">
+                <div class="loyalty-info">
+                    <h3>Estrellas Acumuladas</h3><div class="stars-display" id="stars-display"></div><p id="stars-count-text"></p>
                 </div>
-                
-                <!-- Vista de usuario logueado -->
-                <div v-if="isLoggedIn" class="bg-white rounded-xl shadow-md p-6 max-w-2xl mx-auto">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-secondary">Mi Fidelización</h2>
-                        <button @click="logout" class="text-gray-500 hover:text-primary transition-colors">
-                            <i class="fas fa-sign-out-alt mr-1"></i> Salir
-                        </button>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Registrar Visita</h3>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 mb-2">Motivo de la visita</label>
-                            <select v-model="visitReason" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                <option value="">Seleccione un motivo</option>
-                                <option value="almuerzo">Almuerzo</option>
-                                <option value="cena">Cena</option>
-                                <option value="reunion">Reunión</option>
-                                <option value="celebracion">Celebración</option>
-                            </select>
-                        </div>
-                        <div class="text-center">
-                            <button @click="cameraActive = !cameraActive" 
-                                    :class="{'bg-red-500 hover:bg-red-600': cameraActive, 'bg-primary hover:bg-opacity-90': !cameraActive}"
-                                    class="text-white py-3 px-6 rounded-full transition-colors flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-qrcode mr-2"></i>
-                                {{ cameraActive ? 'Cerrar Cámara' : 'Registrar Visita' }}
-                            </button>
-                            
-                            <div v-if="cameraActive" class="qr-scanner">
-                                <div class="text-center">
-                                    <i class="fas fa-camera text-4xl mb-3"></i>
-                                    <p>Escaneando código QR...</p>
-                                    <p class="text-sm mt-2">Apunta la cámara al código QR proporcionado</p>
-                                </div>
-                            </div>
-                            
-                            <p v-else class="text-gray-600 text-sm">Presiona el botón para escanear el código QR y registrar tu visita</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 rounded-xl p-6 mb-6">
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Puntos Acumulados</h3>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-4">
-                                    <i class="fas fa-star text-primary text-2xl"></i>
-                                </div>
-                                <div>
-                                    <p class="text-3xl font-bold text-primary">12</p>
-                                    <p class="text-gray-600 text-sm">puntos acumulados</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-gray-600">Próximo beneficio:</p>
-                                <p class="font-semibold">Descuento del 20%</p>
-                                <p class="text-sm text-gray-500">Con 15 puntos</p>
-                            </div>
-                        </div>
-                        
-                        <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
-                            <div class="bg-primary h-4 rounded-full" style="width: 80%"></div>
-                        </div>
-                        <p class="text-gray-600 text-sm text-center">8 puntos para tu próximo beneficio</p>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Beneficios Actuales</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="benefit-card bg-green-50 border-l-green-500 p-4 rounded-lg">
-                                <div class="flex items-center mb-2">
-                                    <i class="fas fa-gift text-green-500 mr-2"></i>
-                                    <h4 class="font-semibold text-green-700">Descuento del 10%</h4>
-                                </div>
-                                <p class="text-gray-600 text-sm">Válido en tu próxima visita hasta el 30/12/2023</p>
-                            </div>
-                            <div class="benefit-card bg-blue-50 border-l-blue-500 p-4 rounded-lg">
-                                <div class="flex items-center mb-2">
-                                    <i class="fas fa-glass-cheers text-blue-500 mr-2"></i>
-                                    <h4 class="font-semibold text-blue-700">Copa de vino gratis</h4>
-                                </div>
-                                <p class="text-gray-600 text-sm">Con la compra de cualquier plato principal</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Historial de Visitas</h3>
-                        <div class="space-y-3">
-                            <div v-for="visit in visits" :key="visit.id" class="border-b border-gray-200 pb-3">
-                                <div class="flex justify-between">
-                                    <span class="font-medium">{{ visit.date }}</span>
-                                    <span class="text-primary font-medium">+{{ visit.points }} puntos</span>
-                                </div>
-                                <p class="text-gray-600 text-sm">{{ visit.details }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <button id="qr-button" class="btn btn-success btn-full" style="margin-bottom:18px;"><i class="fa-solid fa-qrcode"></i> Registrar Visita</button>
+                <div id="qr-camera" class="qr-camera hidden"><p><i class="fa-solid fa-camera"></i> Escanea el QR de tu garzón</p></div>
+                <div id="visit-form" class="hidden" style="margin-top: 20px;">
+                    <div id="loyalty-visit-reason-container"></div>
+                    <button class="btn btn-primary btn-full" id="confirm-visit-btn">Confirmar Visita</button>
                 </div>
-            </div>
-
-            <!-- Pestaña: Reservas -->
-            <div v-if="currentTab === 'reservas'" class="pt-4">
-                <h1 class="text-3xl font-bold text-secondary mb-6 text-center">Reserva tu Mesa</h1>
-                
-                <div class="bg-white rounded-xl shadow-md p-6 max-w-2xl mx-auto">
-                    <h3 class="text-lg font-semibold text-secondary mb-4">Datos de Reserva</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-gray-700 mb-1">Fecha</label>
-                            <input type="date" v-model="reservation.date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 mb-1">Hora</label>
-                            <select v-model="reservation.time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                <option value="" disabled selected>Seleccione una hora</option>
-                                <option v-for="time in timeSlots" :key="time" :value="time">{{ time }}</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 mb-1">Nº de Personas</label>
-                            <select v-model="reservation.people" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                <option value="" disabled selected>Seleccione cantidad</option>
-                                <option v-for="n in 10" :key="n" :value="n">{{ n }} {{ n === 1 ? 'persona' : 'personas' }}</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 mb-1">Zona</label>
-                            <select v-model="reservation.zone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                                <option value="" disabled selected>Seleccione zona</option>
-                                <option value="interior">Interior</option>
-                                <option value="terraza">Terraza</option>
-                                <option value="barra">Barra</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Datos de Contacto</h3>
-                        <button @click="fillWithSampleData" class="bg-gray-200 text-gray-700 py-3 px-6 rounded-full hover:bg-gray-300 transition-colors">
-                            <i class="fas fa-user-check mr-2"></i> Usar mis datos
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-gray-700 mb-1">Nombre</label>
-                                <input type="text" v-model="reservation.name" placeholder="Juan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Apellidos</label>
-                                <input type="text" v-model="reservation.surname" placeholder="Pérez López" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Fecha de Nacimiento</label>
-                                <input type="date" v-model="reservation.birthdate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Comuna</label>
-                                <input type="text" v-model="reservation.commune" placeholder="Santiago Centro" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">E-mail</label>
-                                <input type="email" v-model="reservation.email" placeholder="tu@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Celular</label>
-                                <input type="tel" v-model="reservation.phone" placeholder="+56912345678" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8 flex flex-col md:flex-row justify-center gap-4">
-                        <button @click="sendWhatsAppReservation" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-full transition-colors flex items-center justify-center">
-                            <i class="fab fa-whatsapp mr-2 text-xl"></i> Reservar por WhatsApp
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pestaña: Mi Perfil -->
-            <div v-if="currentTab === 'perfil'" class="pt-4">
-                <h1 class="text-3xl font-bold text-secondary mb-6 text-center">Mi Perfil</h1>
-                
-                <!-- Página de bienvenida si no ha iniciado sesión -->
-                <div v-if="!isProfileLoggedIn" class="bg-white rounded-xl shadow-md p-6 max-w-2xl mx-auto">
-                    <div class="text-center mb-6">
-                        <div class="flex justify-center mb-4">
-                            <div class="bg-gray-100 p-4 rounded-full">
-                                <i class="fas fa-user-circle text-4xl text-primary"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 mb-6 text-lg font-medium">
-                            ¡Regístrate o inicia sesión para disfrutar de beneficios exclusivos! Podrás actualizar tus datos, ver tu historial de reservas y visitas, y recibir promociones personalizadas.
-                        </p>
-                        
-                        <div class="flex flex-col md:flex-row justify-center gap-4">
-                            <button @click="showLoginModal = true" class="bg-primary text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors">
-                                <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
-                            </button>
-                            <button @click="showRegisterModal = true" class="bg-secondary text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors">
-                                <i class="fas fa-user-plus mr-2"></i> Registrarse
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Vista de perfil si ha iniciado sesión -->
-                <div v-else class="bg-white rounded-xl shadow-md p-6 max-w-2xl mx-auto">
-                    <div class="flex flex-col md:flex-row items-center mb-8">
-                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mr-4 mb-4 md:mb-0">
-                            <i class="fas fa-user text-gray-500 text-2xl"></i>
-                        </div>
-                        <div class="text-center md:text-left">
-                            <h2 class="text-xl font-semibold text-secondary">{{ user.name }} {{ user.surname }}</h2>
-                            <p class="text-gray-600">{{ user.email }}</p>
-                        </div>
-                        <button @click="editProfile = !editProfile" class="ml-auto bg-primary text-white px-4 py-2 rounded-full hover:bg-opacity-90 transition-colors">
-                            {{ editProfile ? 'Cancelar' : 'Actualizar datos' }}
-                        </button>
-                    </div>
-                    
-                    <div v-if="editProfile">
-                        <h3 class="text-lg font-semibold text-secondary mb-4">Actualizar Información</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-gray-700 mb-1">Nombre</label>
-                                <input type="text" v-model="user.name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Apellidos</label>
-                                <input type="text" v-model="user.surname" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Fecha de Nacimiento</label>
-                                <input type="date" v-model="user.birthdate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Comuna</label>
-                                <input type="text" v-model="user.commune" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">E-mail</label>
-                                <input type="email" v-model="user.email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Celular</label>
-                                <input type="tel" v-model="user.phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            </div>
-                        </div>
-                        <button @click="saveProfile" class="mt-6 w-full bg-primary text-white py-3 rounded-full hover:bg-opacity-90 transition-colors">
-                            Guardar Cambios
-                        </button>
-                    </div>
-                    <div v-else>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div>
-                                <label class="block text-gray-700 mb-1">Nombre completo</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.name }} {{ user.surname }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Fecha de nacimiento</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.birthdate }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Comuna</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.commune }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Email</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.email }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Celular</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.phone }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Miembro desde</label>
-                                <p class="bg-gray-50 p-3 rounded-lg">{{ user.memberSince }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center mb-8">
-                            <label class="flex items-center cursor-pointer">
-                                <span class="mr-3 text-gray-700 font-medium">Recibir mensajes promocionales</span>
-                                <label class="promo-toggle">
-                                    <input type="checkbox" v-model="user.promoMessages">
-                                    <span class="promo-slider"></span>
-                                </label>
-                            </label>
-                        </div>
-                        
-                        <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-secondary mb-4">Mis Reservas</h3>
-                            <div class="space-y-4">
-                                <div v-for="booking in bookings" :key="booking.id" class="border border-gray-200 rounded-xl p-4">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="font-semibold">{{ booking.date }} - {{ booking.time }}</span>
-                                        <span :class="{'bg-green-100 text-green-800': booking.status === 'confirmada', 'bg-yellow-100 text-yellow-800': booking.status === 'pendiente'}" class="px-2 py-1 rounded-full text-xs">
-                                            {{ booking.status }}
-                                        </span>
-                                    </div>
-                                    <p class="text-gray-600 mb-2">{{ booking.people }} personas · {{ booking.zone }}</p>
-                                    <div class="flex justify-between">
-                                        <button @click="editBooking(booking)" class="text-primary hover:underline">Editar</button>
-                                        <button class="text-red-500 hover:underline">Cancelar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 class="text-lg font-semibold text-secondary mb-4">Historial de Visitas</h3>
-                            <div class="space-y-3">
-                                <div v-for="visit in userVisits" :key="visit.id" class="border-b border-gray-200 pb-3">
-                                    <div class="flex justify-between">
-                                        <span class="font-medium">{{ visit.date }}</span>
-                                        <span class="text-primary font-medium">{{ visit.points }} puntos</span>
-                                    </div>
-                                    <p class="text-gray-600 text-sm">{{ visit.details }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button @click="profileLogout" class="mt-8 w-full bg-gray-200 text-gray-700 py-3 rounded-full hover:bg-gray-300 transition-colors flex items-center justify-center">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Barra de navegación inferior (móvil) -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 md:hidden z-50">
-            <div class="flex w-full">
-                <button v-for="tab in tabs" :key="tab.id"
-                    @click="currentTab = tab.id"
-                    :class="{'nav-active': currentTab === tab.id, 'text-gray-500': currentTab !== tab.id}"
-                    class="flex flex-col items-center justify-center py-2 flex-1 min-w-0">
-                    <i :class="tab.icon" class="text-xl mb-1"></i>
-                    <span class="text-xs truncate">{{ tab.name }}</span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Modal para imagen ampliada -->
-        <div v-if="showImageModal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay">
-            <div class="relative max-w-4xl w-full mx-4">
-                <img :src="currentImage" alt="Imagen ampliada" class="max-h-[90vh] mx-auto rounded-lg">
-                <button @click="showImageModal = false" class="absolute top-4 right-4 bg-white rounded-full p-2 text-gray-700 hover:text-primary">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
+                <div class="tabs" style="margin-top: 25px;"><button class="tab-button active" data-tab="loyalty-beneficios">Beneficios</button><button class="tab-button" data-tab="loyalty-historial">Historial</button></div>
+                <div id="tab-loyalty-beneficios" class="tab-content active"><h4>Beneficios Vigentes</h4><div id="current-benefits-list"></div><h4 style="margin-top: 20px;">Utilizados</h4><div id="used-benefits-list"></div></div>
+                <div id="tab-loyalty-historial" class="tab-content"><div id="visit-history-list"></div></div>
             </div>
         </div>
 
-        <!-- Modal de Login -->
-        <div v-if="showLoginModal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay">
-            <div class="login-modal bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4 modal-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-secondary">Iniciar Sesión</h2>
-                    <button @click="showLoginModal = false" class="text-gray-500 hover:text-primary">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+        <div id="reservas" class="content">
+            <div class="page-header"><h1 class="page-title">Hacer Reserva</h1><button id="reservas-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <form id="reservation-form">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="reservation-date" required></div>
+                    <div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
                 </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 mb-1">Email</label>
-                        <input type="email" placeholder="tu@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-1">Contraseña</label>
-                        <input type="password" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div class="text-right">
-                        <a href="#" class="text-primary text-sm hover:underline">¿Olvidaste tu contraseña?</a>
-                    </div>
-                    <button @click="login" class="w-full bg-primary text-white py-3 rounded-full hover:bg-opacity-90 transition-colors">
-                        Entrar
-                    </button>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="reservation-guests" min="1" max="10" placeholder="Cantidad" required></div>
+                    <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
                 </div>
+                <div id="reservation-visit-reason-container"></div>
+                <hr style="margin: 20px 0;">
+                <button type="button" id="load-my-data-btn" class="btn btn-secondary btn-full" style="margin-bottom: 15px;"><i class="fa-solid fa-user-check"></i> Cargar Mis Datos</button>
+                <div id="reservation-user-fields"></div>
+                <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-calendar-check"></i> Confirmar Reserva</button>
+            </form>
+        </div>
+
+        <div id="perfil" class="content">
+            <div class="page-header"><h1 class="page-title">Mi Perfil</h1><button id="perfil-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <div id="profile-logged-out">
+                <p style="margin-bottom: 20px;">Crea una cuenta o inicia sesión para acceder a beneficios exclusivos, gestionar tus reservas y más.</p>
+                <button class="btn btn-primary btn-full" id="profile-login-btn"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
+            </div>
+            <div id="profile-logged-in" class="hidden">
+                <div class="tabs"><button class="tab-button active" data-tab="profile-datos">Mis Datos</button><button class="tab-button" data-tab="profile-reservas">Reservas</button><button class="tab-button" data-tab="profile-visitas">Visitas</button></div>
+                <div id="tab-profile-datos" class="tab-content active">
+                    <div id="profile-data-display"></div><form id="profile-form"></form>
+                    <div id="profile-buttons">
+                        <button id="edit-profile-button" class="btn btn-primary"><i class="fa-solid fa-pen"></i> Actualizar Datos</button>
+                        <button id="save-profile-button" class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
+                        <button id="cancel-edit-button" class="btn btn-secondary hidden"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                        <button id="delete-account-button" class="btn btn-danger hidden"><i class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
+                    </div>
+                </div>
+                <div id="tab-profile-reservas" class="tab-content"><h4>Reservas Vigentes</h4><div id="active-reservations-list"></div><h4 style="margin-top: 20px;">Historial</h4><div id="past-reservations-list"></div></div>
+                <div id="tab-profile-visitas" class="tab-content"><div id="profile-visit-history-list"></div></div>
             </div>
         </div>
 
-        <!-- Modal de Registro -->
-        <div v-if="showRegisterModal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay">
-            <div class="login-modal bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4 modal-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-secondary">Registrarse</h2>
-                    <button @click="showRegisterModal = false" class="text-gray-500 hover:text-primary">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-gray-700 mb-1">Nombre</label>
-                            <input type="text" placeholder="Juan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 mb-1">Apellidos</label>
-                            <input type="text" placeholder="Pérez López" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-1">Fecha de Nacimiento</label>
-                        <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-1">Comuna</label>
-                        <input type="text" placeholder="Santiago Centro" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-1">E-mail</label>
-                        <input type="email" placeholder="tu@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-1">Celular</label>
-                        <input type="tel" placeholder="+569-12345678" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <button @click="register" class="w-full bg-primary text-white py-3 rounded-full hover:bg-opacity-90 transition-colors">
-                        Registrar
-                    </button>
-                </div>
-            </div>
+        <div class="bottom-nav">
+            <div class="nav-item active" data-page="inicio"><div class="nav-icon"><i class="fa-solid fa-house"></i></div><div class="nav-label">Inicio</div></div>
+            <div class="nav-item" data-page="carta"><div class="nav-icon"><i class="fa-solid fa-utensils"></i></div><div class="nav-label">Carta</div></div>
+            <div class="nav-item" data-page="fidelizacion"><div class="nav-icon"><i class="fa-solid fa-star"></i></div><div class="nav-label">Fidelidad</div></div>
+            <div class="nav-item" data-page="reservas"><div class="nav-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="nav-label">Reservas</div></div>
+            <div class="nav-item" data-page="perfil"><div class="nav-icon"><i class="fa-solid fa-user"></i></div><div class="nav-label">Mi Perfil</div></div>
         </div>
     </div>
 
-    <script src="scripts.js"></script>
+    <div id="auth-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Bienvenido</h2><button class="close-modal" data-target="auth-modal">×</button></div><div class="tabs"><button class="tab-button active" data-tab="login-form-tab">Iniciar Sesión</button><button class="tab-button" data-tab="register-form-tab">Registrarse</button></div><form id="login-form-tab" class="tab-content active"><div class="form-group"><label>Email</label><input type="email" class="form-input" required></div><div class="form-group"><label>Contraseña</label><input type="password" class="form-input" required></div><button type="submit" class="btn btn-primary btn-full">Entrar</button></form><form id="register-form-tab" class="tab-content"></form></div></div>
+    <div id="delete-confirm-modal" class="modal"><div class="modal-content" style="text-align: center;"><div class="modal-header"><h2 class="modal-title">¿Eliminar cuenta?</h2><button class="close-modal" data-target="delete-confirm-modal">×</button></div><p>Para confirmar, escribe <strong>Eliminar</strong> abajo.</p><input type="text" id="delete-confirm-input" class="form-input"><button id="final-delete-button" class="btn btn-danger btn-full" disabled style="margin-top: 15px;">Confirmar Eliminación</button></div></div>
+    <div id="menu-item-modal" class="modal"><div class="modal-content" id="menu-item-modal-content"></div></div>
+    <div id="qr-benefit-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Usa tu Beneficio</h2><button class="close-modal" data-target="qr-benefit-modal">×</button></div><img id="qr-benefit-img" src="" alt="QR Beneficio" style="width: 200px; height: 200px; margin: 0 auto 20px auto; display: block;"><p>Presenta este código QR para validar tu beneficio.</p></div></div>
+    <div id="edit-reservation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar Reserva</h2>
+                <button class="close-modal" data-target="edit-reservation-modal">×</button>
+            </div>
+            <form id="edit-reservation-form">
+                <input type="hidden" id="edit-reservation-index">
+                <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="edit-reservation-date" required></div>
+                <div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="edit-reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
+                <div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="edit-reservation-guests" min="1" max="10" placeholder="Cantidad" required></div>
+                <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="edit-reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
+                <button type="submit" class="btn btn-primary btn-full">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ===================================================================
+        // ESTADO Y DATOS GLOBALES
+        // ===================================================================
+        const state = {
+            currentPage: 'inicio',
+            isLoggedIn: false,
+            qrCameraActive: false,
+            visitReasons: ['General', 'Celebración', 'Reunión', 'Otro'],
+            userData: {},
+            menuData: {
+                entradas: [
+                    { id: 1, name: 'Bruschetta', desc: 'Pan tostado con tomates frescos, ajo, albahaca y aceite de oliva extra virgen.', price: 8500, img: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=200&h=200&fit=crop' },
+                    { id: 2, name: 'Provoleta al Orégano', desc: 'Queso provolone fundido con orégano fresco, ideal para compartir.', price: 9200, img: 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?w=200&h=200&fit=crop' },
+                    { id: 3, name: 'Empanadas de Pino (3 und.)', desc: 'Clásicas empanadas chilenas rellenas de pino de carne, cebolla y especias.', price: 7800, img: 'https://images.unsplash.com/photo-1679310249395-ae267ae0d273?w=200&h=200&fit=crop' }
+                ],
+                principales: [
+                    { id: 4, name: 'Risotto de Hongos', desc: 'Arroz cremoso con hongos porcini, champiñones frescos y un toque de parmesano.', price: 15500, originalPrice: 16500, img: 'https://images.unsplash.com/photo-1712407881629-a8ca82a3c64f?w=200&h=200&fit=crop' },
+                    { id: 5, name: 'Salmón a la Plancha', desc: 'Filete de salmón fresco a la plancha, acompañado de espárragos y salsa holandesa.', price: 18900, img: 'https://images.unsplash.com/photo-1519708227418-f7fd9593a2fd?w=200&h=200&fit=crop' },
+                    { id: 6, name: 'Fetuccini Alfredo', desc: 'Pasta fetuccini en salsa cremosa de queso parmesano y mantequilla.', price: 12500, img: 'https://images.unsplash.com/photo-1595908479269-873531b266c1?w=200&h=200&fit=crop' },
+                    { id: 7, name: 'Lomo Vetado con Papas Rústicas', desc: 'Jugoso lomo vetado a la parrilla, servido con papas rústicas y chimichurri.', price: 21900, img: 'https://images.unsplash.com/photo-1603099238692-0b8c6b7e0d3f?w=200&h=200&fit=crop' }
+                ],
+                postres: [
+                    { id: 8, name: 'Tiramisú Clásico', desc: 'Capas de bizcochos savoiardi, café, mascarpone y cacao.', price: 6500, img: 'https://images.unsplash.com/photo-1571162706599-ac138092823a?w=200&h=200&fit=crop' },
+                    { id: 9, name: 'Volcán de Chocolate', desc: 'Bizcocho de chocolate con centro líquido, acompañado de helado de vainilla.', price: 7200, img: 'https://images.unsplash.com/photo-1582298687355-66774e1d702d?w=200&h=200&fit=crop' }
+                ],
+                bebidas: [
+                    { id: 10, name: 'Agua Mineral', desc: 'Con o sin gas.', price: 2500, img: 'https://images.unsplash.com/photo-1621262451318-2e0f0b4f8d2e?w=200&h=200&fit=crop' },
+                    { id: 11, name: 'Jugo Natural', desc: 'Naranja, piña o mango.', price: 3500, img: 'https://images.unsplash.com/photo-1509376664977-da33e9b11915?w=200&h=200&fit=crop' },
+                    { id: 12, name: 'Copa de Vino (Casa)', desc: 'Cabernet Sauvignon o Sauvignon Blanc.', price: 4800, img: 'https://images.unsplash.com/photo-1600863953504-20b1388b0a9c?w=200&h=200&fit=crop' }
+                ]
+            },
+            loggedInUserData: {
+                nombre: 'Juan', apellidos: 'Pérez', email: 'juan@ejemplo.com', celular: '+56912345678',
+                fechaNacimiento: '1990-05-15', comuna: 'Las Condes', instagram: '@juanperez', promoMessages: true, stars: 3,
+                benefits: { current: [{ name: '20% Descuento Cumpleaños', expiry: '2025-12-31', id: 'b1'}], used: [] },
+                visitHistory: [{ date: '2025-06-15', reason: 'Celebración' }],
+                reservations: { 
+                    active: [
+                        { id: 'res1', date: '2025-07-10', time: '20:00', guests: 4, place: 'interior', status: 'confirmada' },
+                        { id: 'res2', date: '2025-07-15', time: '19:30', guests: 2, place: 'terraza', status: 'pendiente' }
+                    ], 
+                    past: [
+                        { id: 'res3', date: '2025-06-01', time: '19:30', guests: 2, place: 'interior', status: 'cancelada' }
+                    ] 
+                }
+            }
+        };
+
+        const DOMElements = {
+            pages: document.querySelectorAll('.content'), navItems: document.querySelectorAll('.nav-item'),
+            logoutButtons: document.querySelectorAll('[id$="-logout-btn"]'),
+            quickActionsContainer: document.getElementById('quick-actions-container'),
+            menuContainer: document.getElementById('menu-container'), categoryFilter: document.getElementById('category-filter'),
+            loyalty: { loggedIn: document.getElementById('loyalty-logged-in'), loggedOut: document.getElementById('loyalty-logged-out'), starsDisplay: document.getElementById('stars-display'), starsText: document.getElementById('stars-count-text'), currentBenefitsList: document.getElementById('current-benefits-list'), usedBenefitsList: document.getElementById('used-benefits-list'), visitHistoryList: document.getElementById('visit-history-list'), qrButton: document.getElementById('qr-button'), qrCamera: document.getElementById('qr-camera'), visitForm: document.getElementById('visit-form'), confirmVisitBtn: document.getElementById('confirm-visit-btn'), visitReasonContainer: document.getElementById('loyalty-visit-reason-container') },
+            profile: { loggedIn: document.getElementById('profile-logged-in'), loggedOut: document.getElementById('profile-logged-out'), dataDisplay: document.getElementById('profile-data-display'), form: document.getElementById('profile-form'), buttons: { edit: document.getElementById('edit-profile-button'), save: document.getElementById('save-profile-button'), cancel: document.getElementById('cancel-edit-button'), delete: document.getElementById('delete-account-button'), }, activeReservations: document.getElementById('active-reservations-list'), pastReservations: document.getElementById('past-reservations-list'), visitHistoryList: document.getElementById('profile-visit-history-list') },
+            reservations: { form: document.getElementById('reservation-form'), loadDataBtn: document.getElementById('load-my-data-btn'), userFields: document.getElementById('reservation-user-fields'), visitReasonContainer: document.getElementById('reservation-visit-reason-container'),
+                            dateInput: document.getElementById('reservation-date'), timeSelect: document.getElementById('reservation-time'),
+                            guestsInput: document.getElementById('reservation-guests'), placeSelect: document.getElementById('reservation-place')},
+            deleteConfirm: { modal: document.getElementById('delete-confirm-modal'), input: document.getElementById('delete-confirm-input'), button: document.getElementById('final-delete-button'), },
+            auth: { modal: document.getElementById('auth-modal'), loginForm: document.getElementById('login-form-tab'), registerForm: document.getElementById('register-form-tab'), },
+            menuItemModal: { modal: document.getElementById('menu-item-modal'), content: document.getElementById('menu-item-modal-content'), },
+            qrBenefitModal: { modal: document.getElementById('qr-benefit-modal'), img: document.getElementById('qr-benefit-img'), },
+            editReservationModal: {
+                modal: document.getElementById('edit-reservation-modal'),
+                form: document.getElementById('edit-reservation-form'),
+                indexInput: document.getElementById('edit-reservation-index'),
+                dateInput: document.getElementById('edit-reservation-date'),
+                timeSelect: document.getElementById('edit-reservation-time'),
+                guestsInput: document.getElementById('edit-reservation-guests'),
+                placeSelect: document.getElementById('edit-reservation-place')
+            }
+        };
+        
+        // ===================================================================
+        // FUNCIONES REUTILIZABLES Y DE RENDERIZADO
+        // ===================================================================
+        const generateUserFieldsHTML = (isEditMode, data = {}) => {
+            const fields = [
+                { id: 'nombre', label: 'Nombre', value: data.nombre || '', required: true },
+                { id: 'apellidos', label: 'Apellidos', value: data.apellidos || '', required: true },
+                { id: 'email', label: 'Email', value: data.email || '', type: 'email', required: true },
+                { id: 'celular', label: 'Celular', value: data.celular || '', type: 'tel', required: true },
+                { id: 'fechaNacimiento', label: 'Fecha de Nacimiento (opcional)', value: data.fechaNacimiento || '', type: 'date' },
+                { id: 'comuna', label: 'Comuna (opcional)', value: data.comuna || '' },
+                { id: 'instagram', label: 'Instagram (opcional)', value: data.instagram || '', placeholder: '@usuario' },
+            ];
+            return fields.map(f => `<div class="form-group"><label class="form-label" for="field-${f.id}">${f.label}</label><input class="form-input" type="${f.type || 'text'}" id="field-${f.id}" value="${f.value}" placeholder="${f.placeholder || ''}" ${f.required && isEditMode ? 'required' : ''}></div>`).join('');
+        };
+
+        const generateVisitReasonSelectHTML = (id) => {
+            const options = state.visitReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+            return `<div class="form-group"><label class="form-label">Motivo de la Visita</label><select id="${id}" class="form-input">${options}</select></div>`;
+        };
+
+        const renderMenu = (filter = 'all') => {
+            let menuHTML = '';
+            for (const category in state.menuData) {
+                if (filter === 'all' || filter === category) {
+                    menuHTML += `<div class="menu-category"><h3 class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>`;
+                    state.menuData[category].forEach(item => {
+                        menuHTML += `
+                            <div class="menu-item" data-item-id="${item.id}" data-category="${category}">
+                                <img src="${item.img}" alt="${item.name}" class="menu-item-image">
+                                <div style="flex-grow: 1;">
+                                    <h4>${item.name}</h4>
+                                    <p style="font-size: 14px; color: var(--medium-gray);">${item.desc}</p>
+                                    <div>
+                                        <span class="price-current">$${item.price.toLocaleString()}</span>
+                                        ${item.originalPrice ? `<span class="price-original">$${item.originalPrice.toLocaleString()}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    menuHTML += `</div>`;
+                }
+            }
+            DOMElements.menuContainer.innerHTML = menuHTML;
+            document.querySelectorAll('.menu-item').forEach(itemEl => {
+                itemEl.addEventListener('click', (e) => {
+                    const category = e.currentTarget.dataset.category;
+                    const itemId = parseInt(e.currentTarget.dataset.itemId);
+                    const item = state.menuData[category].find(i => i.id === itemId);
+                    if (item) showItemDetail(item);
+                });
+            });
+        };
+
+        const renderLoyaltyPage = () => {
+            const { stars, benefits, visitHistory } = state.userData;
+            DOMElements.loyalty.starsDisplay.innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="fa-solid fa-star ${i < stars ? '' : 'inactive'}"></i>`).join('');
+            DOMElements.loyalty.starsText.textContent = `${stars} de 5 estrellas`;
+            const createBenefitItem = (b, isCurrent) => `<div class="benefit-item"><div><strong>${b.name}</strong><br><small>${isCurrent ? 'Válido hasta: ' + b.expiry : 'Usado el: ' + b.date}</small></div>${isCurrent ? `<button class="btn btn-success btn-sm use-benefit-btn" data-name="${b.name}">Usar</button>` : '<span>✅</span>'}</div>`;
+            DOMElements.loyalty.currentBenefitsList.innerHTML = benefits.current.length ? benefits.current.map(b => createBenefitItem(b, true)).join('') : '<p>No tienes beneficios vigentes.</p>';
+            DOMElements.loyalty.usedBenefitsList.innerHTML = benefits.used.length ? benefits.used.map(b => createBenefitItem(b, false)).join('') : '<p>Aún no has usado beneficios.</p>';
+            DOMElements.loyalty.visitHistoryList.innerHTML = visitHistory.length ? visitHistory.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') : '<p>No tienes visitas registradas.</p>';
+            document.querySelectorAll('.use-benefit-btn').forEach(btn => btn.addEventListener('click', (e) => showQRBenefitModal(e.currentTarget.dataset.name)));
+        };
+
+        const renderProfilePage = () => {
+            const { reservations, visitHistory } = state.userData;
+            DOMElements.profile.dataDisplay.innerHTML = `<p><strong>Nombre:</strong> ${state.userData.nombre} ${state.userData.apellidos}</p><p><strong>Email:</strong> ${state.userData.email}</p><p><strong>Celular:</strong> ${state.userData.celular}</p><p><strong>Nacimiento:</strong> ${state.userData.fechaNacimiento || 'No especificado'}</p><p><strong>Comuna:</strong> ${state.userData.comuna || 'No especificada'}</p><p><strong>Instagram:</strong> ${state.userData.instagram || 'No especificado'}</p><p><strong>Mensajes:</strong> ${state.userData.promoMessages ? 'Activados' : 'Desactivados'}</p>`;
+            
+            const createReservationItem = (r, index, isActive) => `
+                <div class="reservation-item">
+                    <div class="reservation-item-header">
+                        <span>${r.date} - ${r.time} (${r.guests} pers.)</span>
+                        <span class="status-badge status-${r.status}">${r.status}</span>
+                    </div>
+                    <small>Lugar: ${r.place === 'any' ? 'Cualquiera' : r.place}</small>
+                    ${isActive ? `
+                        <div class="reservation-actions">
+                            <button class="btn btn-sm btn-secondary edit-reservation-btn" data-index="${index}"><i class="fa-solid fa-pen"></i> Editar</button>
+                            <button class="btn btn-sm btn-danger cancel-reservation-btn" data-index="${index}"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            DOMElements.profile.activeReservations.innerHTML = reservations.active.map((r, index) => createReservationItem(r, index, true)).join('');
+            DOMElements.profile.pastReservations.innerHTML = reservations.past.map(r => createReservationItem(r)).join('');
+            DOMElements.profile.visitHistoryList.innerHTML = visitHistory.length ? visitHistory.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') : '<p>No tienes visitas registradas.</p>';
+
+            document.querySelectorAll('.edit-reservation-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    editReservation(index);
+                });
+            });
+            document.querySelectorAll('.cancel-reservation-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    cancelReservation(index);
+                });
+            });
+        };
+        
+        const updateUI = () => {
+            const loggedIn = state.isLoggedIn;
+            DOMElements.logoutButtons.forEach(btn => btn.classList.toggle('hidden', !loggedIn));
+            if (state.currentPage === 'fidelizacion') {
+                DOMElements.loyalty.loggedIn.classList.toggle('hidden', !loggedIn); DOMElements.loyalty.loggedOut.classList.toggle('hidden', loggedIn);
+                if (loggedIn) renderLoyaltyPage();
+            } else if (state.currentPage === 'perfil') {
+                DOMElements.profile.loggedIn.classList.toggle('hidden', !loggedIn); DOMElements.profile.loggedOut.classList.toggle('hidden', loggedIn);
+                if (loggedIn) renderProfilePage();
+            }
+        };
+
+        // ===================================================================
+        // LÓGICA DE LA APLICACIÓN
+        // ===================================================================
+        const showPage = (pageId) => { state.currentPage = pageId; DOMElements.pages.forEach(p => p.classList.toggle('active', p.id === pageId)); DOMElements.navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId)); updateUI(); };
+        const login = () => { state.isLoggedIn = true; state.userData = JSON.parse(JSON.stringify(state.loggedInUserData)); toggleModal('auth-modal', false); showToast('¡Inicio de sesión exitoso!', 'success'); updateUI(); };
+        const logout = () => { state.isLoggedIn = false; state.userData = {}; showToast('Sesión cerrada correctamente.'); if(['fidelizacion', 'perfil'].includes(state.currentPage)) showPage('inicio'); else updateUI(); };
+        const showItemDetail = (item) => { DOMElements.menuItemModal.content.innerHTML = `<div class="modal-header"><h2 class="modal-title">${item.name}</h2><button class="close-modal" data-target="menu-item-modal">×</button></div><img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;"><p>${item.desc}</p><div style="font-size:20px; font-weight:bold; color:var(--primary-color);">$${item.price.toLocaleString()}</div>`; DOMElements.menuItemModal.content.querySelector('.close-modal').addEventListener('click', () => toggleModal('menu-item-modal', false)); toggleModal('menu-item-modal', true); };
+        const toggleQRCamera = () => {
+            state.qrCameraActive = !state.qrCameraActive; const active = state.qrCameraActive;
+            DOMElements.loyalty.qrButton.innerHTML = active ? '<i class="fa-solid fa-xmark"></i> Cancelar' : '<i class="fa-solid fa-qrcode"></i> Registrar Visita';
+            DOMElements.loyalty.qrButton.classList.toggle('btn-danger', active); DOMElements.loyalty.qrButton.classList.toggle('btn-success', !active);
+            DOMElements.loyalty.qrCamera.classList.toggle('hidden', !active);
+            DOMElements.loyalty.visitForm.classList.toggle('hidden', !active);
+        };
+        const registerVisit = () => {
+            const reason = document.getElementById('loyalty-visit-reason-select').value;
+            const date = new Date().toISOString().split('T')[0];
+            state.userData.visitHistory.unshift({ date, reason });
+
+            state.userData.stars++;
+            if (state.userData.stars >= 5) {
+                state.userData.stars = 0;
+                state.userData.benefits.used.unshift({ name: '40% Descuento 5 Estrellas', date });
+                showToast('¡Felicidades, ganaste un descuento! Tus estrellas se reiniciaron.', 'success');
+            } else {
+                showToast(`¡Visita registrada! Ahora tienes ${state.userData.stars} estrella(s).`);
+            }
+            toggleQRCamera(); renderLoyaltyPage();
+        };
+        const setProfileEditMode = (isEditing) => {
+            DOMElements.profile.dataDisplay.classList.toggle('hidden', isEditing);
+            DOMElements.profile.form.classList.toggle('edit-mode', isEditing);
+            Object.values(DOMElements.profile.buttons).forEach(btn => btn.classList.add('hidden'));
+            if(isEditing) {
+                DOMElements.profile.buttons.save.classList.remove('hidden'); DOMElements.profile.buttons.cancel.classList.remove('hidden');
+                DOMElements.profile.buttons.delete.classList.remove('hidden');
+                DOMElements.profile.form.innerHTML = generateUserFieldsHTML(true, state.userData) + `<div class="form-group" style="display:flex; align-items:center; justify-content:space-between;"><label>Mensajes Promocionales</label><label class="switch"><input type="checkbox" id="field-promo" ${state.userData.promoMessages ? 'checked' : ''}><span class="slider"></span></label></div>`;
+            } else {
+                DOMElements.profile.buttons.edit.classList.remove('hidden');
+            }
+        };
+        const saveProfile = () => {
+            state.userData.nombre = document.getElementById('field-nombre').value;
+            state.userData.apellidos = document.getElementById('field-apellidos').value;
+            state.userData.email = document.getElementById('field-email').value;
+            state.userData.celular = document.getElementById('field-celular').value;
+            state.userData.fechaNacimiento = document.getElementById('field-fechaNacimiento').value;
+            state.userData.comuna = document.getElementById('field-comuna').value;
+            state.userData.instagram = document.getElementById('field-instagram').value;
+            state.userData.promoMessages = document.getElementById('field-promo').checked;
+            renderProfilePage(); setProfileEditMode(false); showToast('Datos guardados.', 'success');
+        };
+
+        const editReservation = (index) => {
+            const reservation = state.userData.reservations.active[index];
+            if (reservation) {
+                DOMElements.editReservationModal.indexInput.value = index;
+                DOMElements.editReservationModal.dateInput.value = reservation.date;
+                DOMElements.editReservationModal.timeSelect.value = reservation.time;
+                DOMElements.editReservationModal.guestsInput.value = reservation.guests;
+                DOMElements.editReservationModal.placeSelect.value = reservation.place;
+                toggleModal('edit-reservation-modal', true);
+            }
+        };
+
+        const saveEditedReservation = (e) => {
+            e.preventDefault();
+            const index = parseInt(DOMElements.editReservationModal.indexInput.value);
+            if (index >= 0 && index < state.userData.reservations.active.length) {
+                state.userData.reservations.active[index] = {
+                    ...state.userData.reservations.active[index],
+                    date: DOMElements.editReservationModal.dateInput.value,
+                    time: DOMElements.editReservationModal.timeSelect.value,
+                    guests: parseInt(DOMElements.editReservationModal.guestsInput.value),
+                    place: DOMElements.editReservationModal.placeSelect.value,
+                };
+                renderProfilePage();
+                toggleModal('edit-reservation-modal', false);
+                showToast('Reserva actualizada.', 'success');
+            }
+        };
+
+        const cancelReservation = (index) => {
+            if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+                const [cancelledReservation] = state.userData.reservations.active.splice(index, 1);
+                cancelledReservation.status = 'cancelada';
+                state.userData.reservations.past.unshift(cancelledReservation);
+                renderProfilePage();
+                showToast('Reserva cancelada.', 'info');
+            }
+        };
+
+        // ===================================================================
+        // MANEJO DE EVENTOS
+        // ===================================================================
+        DOMElements.navItems.forEach(item => item.addEventListener('click', () => showPage(item.dataset.page)));
+        DOMElements.logoutButtons.forEach(btn => btn.addEventListener('click', logout));
+        document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => toggleModal(btn.dataset.target, false)));
+        document.querySelectorAll('.tab-button').forEach(btn => btn.addEventListener('click', (e) => {
+            const tabId = e.currentTarget.dataset.tab;
+            const container = e.currentTarget.closest('.tabs').parentNode;
+            container.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            container.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}` || c.id === tabId));
+        }));
+        
+        DOMElements.auth.loginForm.addEventListener('submit', (e) => { e.preventDefault(); login(); });
+        DOMElements.auth.registerForm.addEventListener('submit', (e) => { e.preventDefault(); login(); }); // Simulación
+        document.getElementById('loyalty-login-btn').addEventListener('click', () => toggleModal('auth-modal', true));
+        document.getElementById('profile-login-btn').addEventListener('click', () => toggleModal('auth-modal', true));
+        DOMElements.categoryFilter.addEventListener('change', (e) => renderMenu(e.target.value));
+
+        DOMElements.loyalty.qrButton.addEventListener('click', toggleQRCamera);
+        DOMElements.loyalty.confirmVisitBtn.addEventListener('click', registerVisit);
+        
+        DOMElements.profile.buttons.edit.addEventListener('click', () => setProfileEditMode(true));
+        DOMElements.profile.buttons.cancel.addEventListener('click', () => setProfileEditMode(false));
+        DOMElements.profile.buttons.save.addEventListener('click', saveProfile);
+        DOMElements.profile.buttons.delete.addEventListener('click', () => toggleModal('delete-confirm-modal', true));
+        DOMElements.deleteConfirm.input.addEventListener('input', e => { DOMElements.deleteConfirm.button.disabled = e.target.value !== 'Eliminar'; });
+        DOMElements.deleteConfirm.button.addEventListener('click', () => { toggleModal('delete-confirm-modal', false); logout(); });
+        
+        DOMElements.reservations.form.addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            const newReservation = {
+                id: 'res' + Date.now(), // Unique ID for the new reservation
+                date: DOMElements.reservations.dateInput.value,
+                time: DOMElements.reservations.timeSelect.value,
+                guests: parseInt(DOMElements.reservations.guestsInput.value),
+                place: DOMElements.reservations.placeSelect.value,
+                status: 'confirmada' // New reservations are confirmed by default
+            };
+
+            if (state.isLoggedIn) {
+                state.userData.reservations.active.unshift(newReservation);
+                renderProfilePage(); // Re-render profile to show new reservation
+            }
+            showToast('¡Reserva confirmada!', 'success'); 
+            e.target.reset(); 
+            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true); 
+        });
+
+        DOMElements.reservations.loadDataBtn.addEventListener('click', () => {
+            if(!state.isLoggedIn) { showToast('Debes iniciar sesión para cargar tus datos.'); toggleModal('auth-modal', true); return; }
+            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true, state.userData);
+        });
+
+        DOMElements.editReservationModal.form.addEventListener('submit', saveEditedReservation);
+
+        const toggleModal = (modalId, show) => document.getElementById(modalId)?.classList.toggle('visible', show);
+        const showToast = (message, type = 'info') => { const toast = document.createElement('div'); toast.textContent = message; toast.style.cssText = `padding: 12px 20px; border-radius: 8px; color: white; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity:0; transition: all 0.3s; transform: translateY(-20px); background-color: ${type === 'success' ? 'var(--success-color)' : type === 'danger' ? 'var(--danger-color)' : 'var(--primary-color)'};`; document.getElementById('toast-container').appendChild(toast); setTimeout(() => { toast.style.opacity = 1; toast.style.transform = 'translateY(0)'; }, 10); setTimeout(() => { toast.style.opacity = 0; setTimeout(() => toast.remove(), 300); }, 3000); };
+        
+        // ===================================================================
+        // INICIALIZACIÓN
+        // ===================================================================
+        const init = () => {
+            Object.keys(state.menuData).forEach(cat => DOMElements.categoryFilter.innerHTML += `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`);
+            document.querySelectorAll('.quick-action').forEach(el => el.addEventListener('click', () => showPage(el.dataset.page)));
+            DOMElements.auth.registerForm.innerHTML = generateUserFieldsHTML(true) + '<button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>';
+            // Initial render of user fields for reservation form (empty if not logged in)
+            DOMElements.reservations.userFields.innerHTML = generateUserFieldsHTML(true, state.isLoggedIn ? state.userData : {});
+            DOMElements.loyalty.visitReasonContainer.innerHTML = generateVisitReasonSelectHTML('loyalty-visit-reason-select');
+            DOMElements.reservations.visitReasonContainer.innerHTML = generateVisitReasonSelectHTML('reservation-visit-reason-select');
+            renderMenu(); // Call renderMenu here to populate the menu
+            showPage('inicio');
+        };
+        init();
+    });
+    </script>
 </body>
 </html>
