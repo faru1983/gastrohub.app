@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,11 @@
             --toast-bg: rgba(0, 0, 0, 0.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,208 +46,667 @@
             margin: 0 auto;
             background: white;
             min-height: 100vh;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
             position: relative;
-            padding-bottom: 80px; /* Space for bottom nav */
+            padding-bottom: 80px;
+            /* Space for bottom nav */
         }
 
-        .content { 
-            display: none; 
-            padding: 20px; /* Mejora: Añadido padding general a las páginas */
+        .content {
+            display: none;
+            padding: 20px;
+            /* Mejora: Añadido padding general a las páginas */
         }
-        .content.active { display: block; animation: fadeIn 0.5s; }
-        .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
 
         /* Navegación Inferior */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 420px; background: white;
-            border-top: 1px solid var(--border-color); display: flex;
-            justify-content: space-around; padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
+
         .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 5px; cursor: pointer; transition: all 0.3s ease;
-            border-radius: 12px; min-width: 60px; color: var(--medium-gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-width: 60px;
+            color: var(--medium-gray);
         }
-        .nav-item.active, .nav-item:hover {
-            background: var(--primary-gradient); color: white; transform: translateY(-2px);
+
+        .nav-item.active,
+        .nav-item:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
         }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; }
-        .nav-label { font-size: 10px; font-weight: 500; }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
 
         /* Componentes y Formularios */
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .page-title {
-            font-size: 28px; font-weight: bold; background: var(--primary-gradient);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-            flex-grow: 1; text-align: center;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .btn {
-            padding: 12px 24px; border: none; border-radius: 10px; font-size: 16px;
-            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
-            display: inline-flex; align-items: center; gap: 8px;
-            text-decoration: none; justify-content: center;
-        }
-        .btn-primary { background: var(--primary-gradient); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
-        .btn-secondary { background: #f5f5f5; color: var(--dark-gray); }
-        .btn-success { background-color: var(--success-color); color: white; }
-        .btn-danger { background-color: var(--danger-color); color: white; }
-        .btn-sm { padding: 8px 12px; font-size: 14px; }
-        .btn-full { width: 100%; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
 
-        .form-group { margin-bottom: 15px; }
-        .form-label { display: block; margin-bottom: 5px; font-weight: 500; color: var(--dark-gray); }
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: var(--dark-gray);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
         .form-input {
-            width: 100%; padding: 12px; border: 2px solid var(--border-color);
-            border-radius: 10px; font-size: 16px; transition: border-color 0.3s ease;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
         }
-        .form-input:focus { outline: none; border-color: var(--primary-color); }
-        .form-row { display: flex; gap: 15px; }
-        .form-row .form-group { flex: 1; }
-        
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
         /* Pestañas */
-        .tabs { display: flex; margin-bottom: 20px; border-radius: 10px; overflow: hidden; background: #f5f5f5; }
-        .tab-button {
-            flex: 1; padding: 12px; text-align: center; cursor: pointer;
-            transition: all 0.3s ease; font-weight: 500; border: none; background: none;
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f5f5;
         }
-        .tab-button.active { background: var(--primary-gradient); color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            background: none;
+        }
+
+        .tab-button.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         /* Modales */
         .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);
-            display: flex; justify-content: center; align-items: center; z-index: 2000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
         }
-        .modal.visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
+
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
         .modal-content {
-            background: white; padding: 25px; border-radius: 20px; width: 90%;
-            max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            transform: scale(0.9); transition: transform 0.3s ease;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
-        .modal.visible .modal-content { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-title { font-size: 24px; font-weight: bold; color: var(--primary-color); }
-        .close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
-        
+
+        .modal.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
         /* Notificaciones Toast */
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; align-items: center; gap: 10px;}
-        .toast {
-            padding: 12px 20px; background: var(--toast-bg); color: white; border-radius: 25px;
-            font-size: 14px; font-weight: 500; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 10px;
-            opacity: 0; transform: translateY(-20px); animation: slideInUp 0.5s forwards;
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
-        .toast.success { background: var(--success-color); }
-        .toast.danger { background: var(--danger-color); }
+
+        .toast {
+            padding: 12px 20px;
+            background: var(--toast-bg);
+            color: white;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideInUp 0.5s forwards;
+        }
+
+        .toast.success {
+            background: var(--success-color);
+        }
+
+        .toast.danger {
+            background: var(--danger-color);
+        }
+
         @keyframes slideInUp {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Estilos específicos de Páginas */
         .restaurant-banner {
-            width: 100%; height: 200px;
+            width: 100%;
+            height: 200px;
             background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=400&fit=crop') center/cover;
-            border-radius: 15px; margin-bottom: 20px; position: relative;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
         }
+
         .restaurant-logo {
-            position: absolute; bottom: -30px; left: 20px; width: 80px; height: 80px;
+            position: absolute;
+            bottom: -30px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
             background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200&h=200&fit=crop') center/cover;
-            border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .restaurant-info { margin-top: 50px; padding: 20px; background: var(--light-gray); border-radius: 15px; }
-        .contact-item { display: flex; align-items: center; gap: 10px; color: #555; margin-bottom: 8px; }
-        .social-links { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+
+        .restaurant-info {
+            margin-top: 50px;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
         .social-link {
-            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: white; text-decoration: none; font-size: 20px; transition: transform 0.3s ease;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            transition: transform 0.3s ease;
         }
-        .social-link:hover { transform: scale(1.1); }
-        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
         .quick-action {
-            padding: 20px; background: white; border-radius: 15px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;
-            text-decoration: none; color: var(--dark-gray);
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--dark-gray);
         }
-        .quick-action:hover { transform: translateY(-5px); }
-        .quick-action-icon { font-size: 30px; margin-bottom: 10px; color: var(--primary-color); }
+
+        .quick-action:hover {
+            transform: translateY(-5px);
+        }
+
+        .quick-action-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
         .google-rating {
-            display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px;
-            background: white; border-radius: 10px; margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        .google-rating:hover { transform: translateY(-2px); }
-        .rating-stars { color: #fbbc05; }
-        .footer { text-align:center; color: #888; font-size: 12px; margin-top: 20px;}
-        .footer a { color: var(--primary-color); text-decoration: none;}
 
-        .menu-category { margin-bottom: 30px; }
-        .category-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 5px; }
-        .menu-item { display: flex; gap: 15px; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); cursor: pointer; }
-        .menu-item-image { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
-        .price-current { font-weight: bold; color: var(--primary-color); }
-        .price-original { text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px; }
-
-        .loyalty-info { text-align: center; padding: 30px 20px; background: var(--primary-gradient); color: white; border-radius: 20px; margin-bottom: 20px; }
-        .stars-display { font-size: 30px; margin: 15px 0; letter-spacing: 5px; color: var(--warning-color); }
-        .stars-display .fa-star.inactive { color: rgba(255, 255, 255, 0.4); }
-        #stars-count-text { margin-top: 5px; font-weight: 500; }
-        .qr-camera { text-align: center; padding: 20px; background: var(--light-gray); border-radius: 10px; border: 2px dashed var(--primary-color); }
-
-        .benefit-item, .history-item, .reservation-item {
-            background: var(--light-gray); border-radius: 10px; margin-bottom: 12px;
-            padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;
+        .google-rating:hover {
+            transform: translateY(-2px);
         }
-        .reservation-item-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+
+        .rating-stars {
+            color: #fbbc05;
+        }
+
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .menu-category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .menu-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+
+        .menu-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .price-current {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .loyalty-info {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stars-display {
+            font-size: 30px;
+            margin: 15px 0;
+            letter-spacing: 5px;
+            color: var(--warning-color);
+        }
+
+        .stars-display .fa-star.inactive {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #stars-count-text {
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .qr-camera {
+            text-align: center;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .benefit-item,
+        .history-item,
+        .reservation-item {
+            background: var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reservation-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
         .status-badge {
-            padding: 3px 8px; border-radius: 8px; font-size: 12px;
-            font-weight: 600; color: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
         }
-        .status-confirmada { background-color: var(--success-color); }
-        .status-pendiente { background-color: var(--pending-color); color: var(--dark-gray);}
-        .status-cancelada { background-color: var(--danger-color); }
 
-        #profile-data-display p { margin: 0 0 12px; color: var(--medium-gray); line-height: 1.4; }
-        #profile-data-display strong { font-weight: 600; color: var(--dark-gray); display: block; margin-bottom: 2px; font-size: 14px; }
-        #profile-form { display: none; }
-        #profile-form.edit-mode { display: block; }
-        #delete-account-button { margin-top: 30px; }
-        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary-color); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        .status-confirmada {
+            background-color: var(--success-color);
+        }
 
-        .reservation-actions { margin-left: 10px; display: flex; gap: 5px; }
+        .status-pendiente {
+            background-color: var(--pending-color);
+            color: var(--dark-gray);
+        }
+
+        .status-cancelada {
+            background-color: var(--danger-color);
+        }
+
+        #profile-data-display p {
+            margin: 0 0 12px;
+            color: var(--medium-gray);
+            line-height: 1.4;
+        }
+
+        #profile-data-display strong {
+            font-weight: 600;
+            color: var(--dark-gray);
+            display: block;
+            margin-bottom: 2px;
+            font-size: 14px;
+        }
+
+        #profile-form {
+            display: none;
+        }
+
+        #profile-form.edit-mode {
+            display: block;
+        }
+
+        #delete-account-button {
+            margin-top: 30px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        .reservation-actions {
+            margin-left: 10px;
+            display: flex;
+            gap: 5px;
+        }
 
         #category-filter-sticky {
-            position: sticky; top: -20px; /* Compensa el padding del contenedor */
+            position: sticky;
+            top: -20px;
+            /* Compensa el padding del contenedor */
             z-index: 10;
-            background: white; 
+            background: white;
             padding-top: 10px;
-            margin: 0 -20px; /* Extiende el fondo al borde */
-            padding-left: 20px; /* Mantiene el select alineado */
-            padding-right: 20px; /* Mantiene el select alineado */
+            margin: 0 -20px;
+            /* Extiende el fondo al borde */
+            padding-left: 20px;
+            /* Mantiene el select alineado */
+            padding-right: 20px;
+            /* Mantiene el select alineado */
         }
 
         #qr-code-container {
             padding: 10px;
             background-color: white;
             border-radius: 10px;
-            display: inline-block; /* To fit content size */
+            display: inline-block;
+            /* To fit content size */
             margin: 0 auto 20px auto;
         }
-
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Contenedor para notificaciones flotantes -->
@@ -250,280 +714,451 @@
 
         <!-- PÁGINA: INICIO -->
         <div id="inicio" class="content active">
-            <div class="restaurant-banner"><div class="restaurant-logo"></div></div>
+            <div class="restaurant-banner">
+                <div class="restaurant-logo"></div>
+            </div>
             <div class="restaurant-info">
                 <h1 style="font-size: 24px; font-weight: bold; color: var(--dark-gray);">Restaurante El Sabor</h1>
-                <p style="color: var(--medium-gray); margin: 10px 0; line-height: 1.5;">Cocina mediterránea moderna con ingredientes frescos y locales.</p>
+                <p style="color: var(--medium-gray); margin: 10px 0; line-height: 1.5;">Cocina mediterránea moderna con
+                    ingredientes frescos y locales.</p>
                 <div class="contact-info">
-                    <div class="contact-item"><i class="fa-solid fa-location-dot fa-fw" style="color: var(--primary-color);"></i><span>Av. Providencia 1234, Santiago</span></div>
-                    <div class="contact-item"><i class="fa-solid fa-clock fa-fw" style="color: var(--primary-color);"></i><span>Lun-Dom: 18:00 - 23:00</span></div>
-                    <div class="contact-item"><i class="fa-solid fa-phone fa-fw" style="color: var(--primary-color);"></i><span>+56 9 1234 5678</span></div>
+                    <div class="contact-item"><i class="fa-solid fa-location-dot fa-fw"
+                            style="color: var(--primary-color);"></i><span>Av. Providencia 1234, Santiago</span></div>
+                    <div class="contact-item"><i class="fa-solid fa-clock fa-fw"
+                            style="color: var(--primary-color);"></i><span>Lun-Dom: 18:00 - 23:00</span></div>
+                    <div class="contact-item"><i class="fa-solid fa-phone fa-fw"
+                            style="color: var(--primary-color);"></i><span>+56 9 1234 5678</span></div>
                 </div>
             </div>
             <div class="google-rating" data-modal-target="review-modal" data-modal-action="open">
                 <i class="fab fa-google" style="color: #4285f4;"></i>
-                <span class="rating-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></span>
+                <span class="rating-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star-half-stroke"></i></span>
                 <span><strong>4.8</strong> en Google</span>
             </div>
             <div class="social-links">
                 <a href="#" class="social-link" style="background: #3b5998;"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"
+                    style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i
+                        class="fab fa-instagram"></i></a>
                 <a href="#" class="social-link" style="background: #000;"><i class="fab fa-tiktok"></i></a>
                 <a href="#" class="social-link" style="background: #25d366;"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="quick-actions">
-                <div class="quick-action" data-page="carta"><div class="quick-action-icon"><i class="fa-solid fa-utensils"></i></div><div>Carta</div></div>
-                <div class="quick-action" data-page="reservas"><div class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></div><div>Reservas</div></div>
-                <div class="quick-action" data-page="fidelizacion"><div class="quick-action-icon"><i class="fa-solid fa-star"></i></div><div>Fidelidad</div></div>
+                <div class="quick-action" data-page="carta">
+                    <div class="quick-action-icon"><i class="fa-solid fa-utensils"></i></div>
+                    <div>Carta</div>
+                </div>
+                <div class="quick-action" data-page="reservas">
+                    <div class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>Reservas</div>
+                </div>
+                <div class="quick-action" data-page="fidelizacion">
+                    <div class="quick-action-icon"><i class="fa-solid fa-star"></i></div>
+                    <div>Fidelidad</div>
+                </div>
             </div>
-            <div class="footer">Sitio potenciado por <a href="https://gastrohub.app" target="_blank">GastroHub App</a></div>
+            <div class="footer">Sitio potenciado por <a href="https://gastrohub.app" target="_blank">GastroHub App</a>
+            </div>
         </div>
 
         <!-- PÁGINA: CARTA -->
         <div id="carta" class="content">
-            <div class="page-header"><h1 class="page-title">Nuestra Carta</h1></div>
+            <div class="page-header">
+                <h1 class="page-title">Nuestra Carta</h1>
+            </div>
             <div id="category-filter-sticky">
-                <div class="form-group"><select class="form-input" id="category-filter"><option value="all">Todas las categorías</option></select></div>
+                <div class="form-group"><select class="form-input" id="category-filter">
+                        <option value="all">Todas las categorías</option>
+                    </select></div>
             </div>
             <div id="menu-container"></div>
         </div>
 
         <!-- PÁGINA: FIDELIZACIÓN -->
         <div id="fidelizacion" class="content">
-            <div class="page-header"><h1 class="page-title">Fidelidad</h1><button id="fidelizacion-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <div class="page-header">
+                <h1 class="page-title">Fidelidad</h1><button id="fidelizacion-logout-btn"
+                    class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
             <div id="loyalty-logged-out">
                 <div class="loyalty-info">
-                    <h2>¡Únete a nuestro programa!</h2><p>¡Junta 5 estrellas y obtén un 40% de descuento!</p>
-                    <div class="stars-display"><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></div>
-                    <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
+                    <h2>¡Únete a nuestro programa!</h2>
+                    <p>¡Junta 5 estrellas y obtén un 40% de descuento!</p>
+                    <div class="stars-display"><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i
+                            class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i
+                            class="fa-regular fa-star"></i></div>
+                    <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i
+                            class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
                 </div>
             </div>
             <div id="loyalty-logged-in" class="hidden">
                 <div class="loyalty-info">
-                    <h3>Estrellas Acumuladas</h3><div class="stars-display" id="stars-display"></div><p id="stars-count-text"></p>
+                    <h3>Estrellas Acumuladas</h3>
+                    <div class="stars-display" id="stars-display"></div>
+                    <p id="stars-count-text"></p>
                 </div>
-                <button id="qr-button" class="btn btn-success btn-full" style="margin-bottom:18px;"><i class="fa-solid fa-qrcode"></i> Registrar Visita</button>
-                <div id="qr-camera" class="qr-camera hidden"><p><i class="fa-solid fa-camera"></i> Escanea el QR de tu garzón</p></div>
+                <button id="qr-button" class="btn btn-success btn-full" style="margin-bottom:18px;"><i
+                        class="fa-solid fa-qrcode"></i> Registrar Visita</button>
+                <div id="qr-camera" class="qr-camera hidden">
+                    <p><i class="fa-solid fa-camera"></i> Escanea el QR de tu garzón</p>
+                </div>
                 <div id="visit-form" class="hidden" style="margin-top: 20px;">
                     <div id="loyalty-visit-reason-container"></div>
                     <button class="btn btn-primary btn-full" id="confirm-visit-btn">Confirmar Visita</button>
                 </div>
-                <div class="tabs" style="margin-top: 25px;"><button class="tab-button active" data-tab="loyalty-beneficios">Beneficios</button><button class="tab-button" data-tab="loyalty-historial">Historial</button></div>
-                <div id="tab-loyalty-beneficios" class="tab-content active"><h4>Beneficios Vigentes</h4><div id="current-benefits-list"></div><h4 style="margin-top: 20px;">Utilizados</h4><div id="used-benefits-list"></div></div>
-                <div id="tab-loyalty-historial" class="tab-content"><div id="visit-history-list"></div></div>
+                <div class="tabs" style="margin-top: 25px;"><button class="tab-button active"
+                        data-tab="loyalty-beneficios">Beneficios</button><button class="tab-button"
+                        data-tab="loyalty-historial">Historial</button></div>
+                <div id="tab-loyalty-beneficios" class="tab-content active">
+                    <h4>Beneficios Vigentes</h4>
+                    <div id="current-benefits-list"></div>
+                    <h4 style="margin-top: 20px;">Utilizados</h4>
+                    <div id="used-benefits-list"></div>
+                </div>
+                <div id="tab-loyalty-historial" class="tab-content">
+                    <div id="visit-history-list"></div>
+                </div>
             </div>
         </div>
 
         <!-- PÁGINA: RESERVAS -->
         <div id="reservas" class="content">
-            <div class="page-header"><h1 class="page-title">Hacer Reserva</h1><button id="reservas-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <div class="page-header">
+                <h1 class="page-title">Hacer Reserva</h1><button id="reservas-logout-btn"
+                    class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
             <form id="reservation-form">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="reservation-date" required></div>
-                    <div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
+                    <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input"
+                            id="reservation-date" required></div>
+                    <div class="form-group"><label class="form-label">Hora</label><select class="form-input"
+                            id="reservation-time" required>
+                            <option value="">Seleccionar</option>
+                            <option>18:00</option>
+                            <option>19:00</option>
+                            <option>20:00</option>
+                            <option>21:00</option>
+                        </select></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-  <label class="form-label">Personas</label>
-  <select class="form-input" id="reservation-guests" required>
-    <option value="" disabled selected>Cantidad</option>
-    <option value="1">1 px</option>
-    <option value="2">2 px</option>
-    <option value="3">3 px</option>
-    <option value="4">4 px</option>
-    <option value="5">5 px</option>
-    <option value="6">6 px</option>
-    <option value="7">7 px</option>
-    <option value="8">8 px</option>
-  </select>
-</div>
-                    <div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div>
+                        <label class="form-label">Personas</label>
+                        <select class="form-input" id="reservation-guests" required>
+                            <option value="" disabled selected>Cantidad</option>
+                            <option value="1">1 px</option>
+                            <option value="2">2 px</option>
+                            <option value="3">3 px</option>
+                            <option value="4">4 px</option>
+                            <option value="5">5 px</option>
+                            <option value="6">6 px</option>
+                            <option value="7">7 px</option>
+                            <option value="8">8 px</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Lugar</label><select class="form-input"
+                            id="reservation-place">
+                            <option value="any">Cualquiera</option>
+                            <option value="interior">Interior</option>
+                            <option value="terraza">Terraza</option>
+                        </select></div>
                 </div>
-                <div id="reservation-visit-reason-container"></div><hr style="margin: 20px 0;">
-                <button type="button" id="load-my-data-btn" class="btn btn-secondary btn-full" style="margin-bottom: 15px;"><i class="fa-solid fa-user-check"></i> Cargar Mis Datos</button>
+                <div id="reservation-visit-reason-container"></div>
+                <hr style="margin: 20px 0;">
+                <button type="button" id="load-my-data-btn" class="btn btn-secondary btn-full"
+                    style="margin-bottom: 15px;"><i class="fa-solid fa-user-check"></i> Cargar Mis Datos</button>
                 <div id="reservation-user-fields"></div>
-                <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-calendar-check"></i> Confirmar Reserva</button>
+                <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-calendar-check"></i>
+                    Confirmar Reserva</button>
             </form>
         </div>
 
         <!-- PÁGINA: PERFIL -->
         <div id="perfil" class="content">
-            <div class="page-header"><h1 class="page-title">Mi Perfil</h1><button id="perfil-logout-btn" class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+            <div class="page-header">
+                <h1 class="page-title">Mi Perfil</h1><button id="perfil-logout-btn"
+                    class="btn btn-secondary btn-sm hidden"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
             <div id="profile-logged-out">
-                <p style="margin-bottom: 20px;">Crea una cuenta o inicia sesión para acceder a beneficios exclusivos, gestionar tus reservas y más.</p>
-                <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
+                <p style="margin-bottom: 20px;">Crea una cuenta o inicia sesión para acceder a beneficios exclusivos,
+                    gestionar tus reservas y más.</p>
+                <button class="btn btn-primary btn-full" data-modal-target="auth-modal" data-modal-action="open"><i
+                        class="fa-solid fa-user-plus"></i> Crear Cuenta / Iniciar Sesión</button>
             </div>
             <div id="profile-logged-in" class="hidden">
-                <div class="tabs"><button class="tab-button active" data-tab="profile-datos">Mis Datos</button><button class="tab-button" data-tab="profile-reservas">Reservas</button><button class="tab-button" data-tab="profile-visitas">Visitas</button></div>
+                <div class="tabs"><button class="tab-button active" data-tab="profile-datos">Mis Datos</button><button
+                        class="tab-button" data-tab="profile-reservas">Reservas</button><button class="tab-button"
+                        data-tab="profile-visitas">Visitas</button></div>
                 <div id="tab-profile-datos" class="tab-content active">
                     <div id="profile-data-display"></div>
                     <form id="profile-form"></form>
                     <div id="profile-buttons">
-                        <button id="edit-profile-button" class="btn btn-primary"><i class="fa-solid fa-pen"></i> Actualizar Datos</button>
+                        <button id="edit-profile-button" class="btn btn-primary"><i class="fa-solid fa-pen"></i>
+                            Actualizar Datos</button>
                         <!-- Mejora: Botón de guardar ahora es de tipo submit y está asociado al formulario -->
-                        <button id="save-profile-button" type="submit" form="profile-form" class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
-                        <button id="cancel-edit-button" class="btn btn-secondary hidden"><i class="fa-solid fa-xmark"></i> Cancelar</button>
-                        <button id="delete-account-button" class="btn btn-danger hidden" data-modal-target="delete-confirm-modal" data-modal-action="open"><i class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
+                        <button id="save-profile-button" type="submit" form="profile-form"
+                            class="btn btn-success hidden"><i class="fa-solid fa-check"></i> Guardar</button>
+                        <button id="cancel-edit-button" class="btn btn-secondary hidden"><i
+                                class="fa-solid fa-xmark"></i> Cancelar</button>
+                        <button id="delete-account-button" class="btn btn-danger hidden"
+                            data-modal-target="delete-confirm-modal" data-modal-action="open"><i
+                                class="fa-solid fa-trash"></i> Eliminar Cuenta</button>
                     </div>
                 </div>
-                <div id="tab-profile-reservas" class="tab-content"><h4>Reservas Vigentes</h4><div id="active-reservations-list"></div><h4 style="margin-top: 20px;">Historial</h4><div id="past-reservations-list"></div></div>
-                <div id="tab-profile-visitas" class="tab-content"><div id="profile-visit-history-list"></div></div>
+                <div id="tab-profile-reservas" class="tab-content">
+                    <h4>Reservas Vigentes</h4>
+                    <div id="active-reservations-list"></div>
+                    <h4 style="margin-top: 20px;">Historial</h4>
+                    <div id="past-reservations-list"></div>
+                </div>
+                <div id="tab-profile-visitas" class="tab-content">
+                    <div id="profile-visit-history-list"></div>
+                </div>
             </div>
         </div>
 
         <!-- NAVEGACIÓN INFERIOR -->
         <div class="bottom-nav">
-            <div class="nav-item active" data-page="inicio"><div class="nav-icon"><i class="fa-solid fa-house"></i></div><div class="nav-label">Inicio</div></div>
-            <div class="nav-item" data-page="carta"><div class="nav-icon"><i class="fa-solid fa-utensils"></i></div><div class="nav-label">Carta</div></div>
-            <div class="nav-item" data-page="reservas"><div class="nav-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="nav-label">Reservas</div></div>
-            <div class="nav-item" data-page="fidelizacion"><div class="nav-icon"><i class="fa-solid fa-star"></i></div><div class="nav-label">Fidelidad</div></div>
-            <div class="nav-item" data-page="perfil"><div class="nav-icon"><i class="fa-solid fa-user"></i></div><div class="nav-label">Mi Perfil</div></div>
+            <div class="nav-item active" data-page="inicio">
+                <div class="nav-icon"><i class="fa-solid fa-house"></i></div>
+                <div class="nav-label">Inicio</div>
+            </div>
+            <div class="nav-item" data-page="carta">
+                <div class="nav-icon"><i class="fa-solid fa-utensils"></i></div>
+                <div class="nav-label">Carta</div>
+            </div>
+            <div class="nav-item" data-page="reservas">
+                <div class="nav-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="nav-label">Reservas</div>
+            </div>
+            <div class="nav-item" data-page="fidelizacion">
+                <div class="nav-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="nav-label">Fidelidad</div>
+            </div>
+            <div class="nav-item" data-page="perfil">
+                <div class="nav-icon"><i class="fa-solid fa-user"></i></div>
+                <div class="nav-label">Mi Perfil</div>
+            </div>
         </div>
     </div>
 
     <!-- ========= MODALES ========= -->
-    <div id="auth-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Bienvenido</h2><button class="close-modal" data-modal-action="close">×</button></div><div class="tabs"><button class="tab-button active" data-tab="login-form-tab">Iniciar Sesión</button><button class="tab-button" data-tab="register-form-tab">Registrarse</button></div><form id="login-form-tab" class="tab-content active"><div class="form-group"><label>Email</label><input type="email" class="form-input" required></div><div class="form-group"><label>Contraseña</label><input type="password" class="form-input" required></div><button type="submit" class="btn btn-primary btn-full">Entrar</button></form><form id="register-form-tab" class="tab-content"></form></div></div>
-    <div id="delete-confirm-modal" class="modal"><div class="modal-content" style="text-align: center;"><div class="modal-header"><h2 class="modal-title">¿Eliminar cuenta?</h2><button class="close-modal" data-modal-action="close">×</button></div><p>Para confirmar, escribe <strong>Eliminar</strong> abajo.</p><input type="text" id="delete-confirm-input" class="form-input"><button id="final-delete-button" class="btn btn-danger btn-full" disabled style="margin-top: 15px;">Confirmar Eliminación</button></div></div>
-    <div id="menu-item-modal" class="modal"><div class="modal-content" id="menu-item-modal-content"></div></div>
-    <div id="qr-benefit-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Usa tu Beneficio</h2><button class="close-modal" data-modal-action="close">×</button></div><div id="qr-code-container"></div><p>Presenta este código QR para validar tu beneficio.</p></div></div>
-    <div id="edit-reservation-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Editar Reserva</h2><button class="close-modal" data-modal-action="close">×</button></div><form id="edit-reservation-form"><input type="hidden" id="edit-reservation-id"><div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="edit-reservation-date" required></div><div class="form-group"><label class="form-label">Hora</label><select class="form-input" id="edit-reservation-time" required><option value="">Seleccionar</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div><div class="form-group"><label class="form-label">Personas</label><input type="number" class="form-input" id="edit-reservation-guests" min="1" max="10" placeholder="Cantidad" required></div><div class="form-group"><label class="form-label">Lugar</label><select class="form-input" id="edit-reservation-place"><option value="any">Cualquiera</option><option value="interior">Interior</option><option value="terraza">Terraza</option></select></div><button type="submit" class="btn btn-primary btn-full">Guardar Cambios</button></form></div></div>
-    <div id="review-modal" class="modal"><div class="modal-content" style="text-align:center;"><div class="modal-header"><h2 class="modal-title">Escríbenos una Reseña</h2><button class="close-modal" data-modal-action="close">×</button></div><p>¡Tu opinión es muy importante para nosotros!</p><a href="https://g.page/r/CZMhTQCrKMcrEBM/review" target="_blank" class="btn btn-primary btn-full" style="margin-top:15px;"><i class="fab fa-google"></i> Ir a Google Reseñas</a></div></div>
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bienvenido</h2><button class="close-modal" data-modal-action="close">×</button>
+            </div>
+            <div class="tabs"><button class="tab-button active" data-tab="login-form-tab">Iniciar Sesión</button><button
+                    class="tab-button" data-tab="register-form-tab">Registrarse</button></div>
+            <form id="login-form-tab" class="tab-content active">
+                <div class="form-group"><label>Email</label><input type="email" class="form-input" required></div>
+                <div class="form-group"><label>Contraseña</label><input type="password" class="form-input" required>
+                </div><button type="submit" class="btn btn-primary btn-full">Entrar</button>
+            </form>
+            <form id="register-form-tab" class="tab-content"></form>
+        </div>
+    </div>
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-header">
+                <h2 class="modal-title">¿Eliminar cuenta?</h2><button class="close-modal"
+                    data-modal-action="close">×</button>
+            </div>
+            <p>Para confirmar, escribe <strong>Eliminar</strong> abajo.</p><input type="text" id="delete-confirm-input"
+                class="form-input"><button id="final-delete-button" class="btn btn-danger btn-full" disabled
+                style="margin-top: 15px;">Confirmar Eliminación</button>
+        </div>
+    </div>
+    <div id="menu-item-modal" class="modal">
+        <div class="modal-content" id="menu-item-modal-content"></div>
+    </div>
+    <div id="qr-benefit-modal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <div class="modal-header">
+                <h2 class="modal-title">Usa tu Beneficio</h2><button class="close-modal"
+                    data-modal-action="close">×</button>
+            </div>
+            <div id="qr-code-container"></div>
+            <p>Presenta este código QR para validar tu beneficio.</p>
+        </div>
+    </div>
+    <div id="edit-reservation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar Reserva</h2><button class="close-modal"
+                    data-modal-action="close">×</button>
+            </div>
+            <form id="edit-reservation-form"><input type="hidden" id="edit-reservation-id">
+                <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input"
+                        id="edit-reservation-date" required></div>
+                <div class="form-group"><label class="form-label">Hora</label><select class="form-input"
+                        id="edit-reservation-time" required>
+                        <option value="">Seleccionar</option>
+                        <option>18:00</option>
+                        <option>19:00</option>
+                        <option>20:00</option>
+                        <option>21:00</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Personas</label><input type="number"
+                        class="form-input" id="edit-reservation-guests" min="1" max="10" placeholder="Cantidad"
+                        required></div>
+                <div class="form-group"><label class="form-label">Lugar</label><select class="form-input"
+                        id="edit-reservation-place">
+                        <option value="any">Cualquiera</option>
+                        <option value="interior">Interior</option>
+                        <option value="terraza">Terraza</option>
+                    </select></div><button type="submit" class="btn btn-primary btn-full">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    <div id="review-modal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <div class="modal-header">
+                <h2 class="modal-title">Escríbenos una Reseña</h2><button class="close-modal"
+                    data-modal-action="close">×</button>
+            </div>
+            <p>¡Tu opinión es muy importante para nosotros!</p><a href="https://g.page/r/CZMhTQCrKMcrEBM/review"
+                target="_blank" class="btn btn-primary btn-full" style="margin-top:15px;"><i class="fab fa-google"></i>
+                Ir a Google Reseñas</a>
+        </div>
+    </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // ===================================================================
-        // 1. ESTADO CENTRALIZADO Y DATOS DE LA APLICACIÓN
-        // ===================================================================
-        const state = {
-            currentPage: 'inicio',
-            isLoggedIn: false,
-            qrCameraActive: false,
-            qrCodeInstance: null, // Guardará la instancia del QR para poder limpiarla
-            visitReasons: ['General', 'Celebración', 'Reunión', 'Otro'],
-            userData: {}, // Los datos del usuario se cargan al iniciar sesión
-            menuData: {
-                entradas: [
-                    { id: 1, name: 'Bruschetta', desc: 'Pan tostado con tomates frescos, ajo, albahaca y aceite de oliva extra virgen.', price: 8500, img: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=200&h=200&fit=crop' },
-                    { id: 2, name: 'Provoleta al Orégano', desc: 'Queso provolone fundido con orégano fresco, ideal para compartir.', price: 9200, img: 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?w=200&h=200&fit=crop' },
-                    { id: 3, name: 'Empanadas de Pino (3 und.)', desc: 'Clásicas empanadas chilenas rellenas de pino de carne, cebolla y especias.', price: 7800, img: 'https://images.unsplash.com/photo-1679310249395-ae267ae0d273?w=200&h=200&fit=crop' }
-                ],
-                principales: [
-                    { id: 4, name: 'Risotto de Hongos', desc: 'Arroz cremoso con hongos porcini, champiñones frescos y un toque de parmesano.', price: 15500, originalPrice: 16500, img: 'https://images.unsplash.com/photo-1712407881629-a8ca82aed5?w=200&h=200&fit=crop' },
-                    { id: 5, name: 'Salmón a la Plancha', desc: 'Filete de salmón fresco a la plancha, acompañado de espárragos y salsa holandesa.', price: 18900, img: 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=200&h=200&fit=crop' },
-                ],
-                postres: [ { id: 8, name: 'Tiramisú Clásico', desc: 'Capas de bizcochos savoiardi, café, mascarpone y cacao.', price: 6500, img: 'https://images.unsplash.com/photo-1639744211487-b27e3551b07c?w=200&h=200&fit=crop' }, ],
-                bebidas: [ { id: 10, name: 'Agua Mineral', desc: 'Con o sin gas.', price: 2500, img: 'https://images.unsplash.com/photo-1639256150782-ecdb00b01e84?w=200&h=200&fit=crop' },]
-            },
-            // Plantilla de datos para un usuario que inicia sesión
-            loggedInUserDataTemplate: {
-                nombre: 'Juan', apellidos: 'Pérez', email: 'juan@ejemplo.com', celular: '+56912345678',
-                fechaNacimiento: '1990-05-15', comuna: 'Las Condes', instagram: '@juanperez', promoMessages: true, stars: 3,
-                benefits: { current: [{ name: '20% Descuento Cumpleaños', expiry: '2025-12-31', id: 'b1'}], used: [] },
-                visitHistory: [{ date: '2025-06-15', reason: 'Celebración' }],
-                reservations: { 
-                    active: [
-                        { id: 'res1', date: '2025-07-10', time: '20:00', guests: 4, place: 'interior', status: 'confirmada' },
-                        { id: 'res2', date: '2025-07-15', time: '19:30', guests: 2, place: 'terraza', status: 'pendiente' }
-                    ], 
-                    past: [ { id: 'res3', date: '2025-06-01', time: '19:30', guests: 2, place: 'interior', status: 'cancelada' } ] 
-                }
-            }
-        };
-
-        // ===================================================================
-        // 2. CACHÉ DE ELEMENTOS DEL DOM
-        // ===================================================================
-        const DOMElements = {
-            pages: document.querySelectorAll('.content'),
-            navItems: document.querySelectorAll('.nav-item'),
-            logoutButtons: document.querySelectorAll('[id$="-logout-btn"]'),
-            toastContainer: document.getElementById('toast-container'),
-            menuContainer: document.getElementById('menu-container'),
-            categoryFilter: document.getElementById('category-filter'),
-            // Secciones que cambian con el login/logout
-            loyalty: { loggedIn: document.getElementById('loyalty-logged-in'), loggedOut: document.getElementById('loyalty-logged-out') },
-            profile: { loggedIn: document.getElementById('profile-logged-in'), loggedOut: document.getElementById('profile-logged-out') },
-        };
-
-        // ===================================================================
-        // 3. FUNCIONES DE UTILIDAD GLOBALES
-        // ===================================================================
-        
-        /**
-         * Muestra u oculta un modal por su ID.
-         * @param {string} modalId - El ID del modal a controlar.
-         * @param {boolean} show - `true` para mostrar, `false` para ocultar.
-         */
-        const toggleModal = (modalId, show) => {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.toggle('visible', show);
-                if (!show) {
-                    // Limpiar el input de confirmación de borrado al cerrar
-                    if (modalId === 'delete-confirm-modal') {
-                        document.getElementById('delete-confirm-input').value = '';
-                        document.getElementById('final-delete-button').disabled = true;
+        document.addEventListener('DOMContentLoaded', () => {
+            // ===================================================================
+            // 1. ESTADO CENTRALIZADO Y DATOS DE LA APLICACIÓN
+            // ===================================================================
+            const state = {
+                currentPage: 'inicio',
+                isLoggedIn: false,
+                qrCameraActive: false,
+                qrCodeInstance: null, // Guardará la instancia del QR para poder limpiarla
+                visitReasons: ['General', 'Celebración', 'Reunión', 'Otro'],
+                userData: {}, // Los datos del usuario se cargan al iniciar sesión
+                menuData: {
+                    entradas: [
+                        { id: 1, name: 'Bruschetta', desc: 'Pan tostado con tomates frescos, ajo, albahaca y aceite de oliva extra virgen.', price: 8500, img: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=200&h=200&fit=crop' },
+                        { id: 2, name: 'Provoleta al Orégano', desc: 'Queso provolone fundido con orégano fresco, ideal para compartir.', price: 9200, img: 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?w=200&h=200&fit=crop' },
+                        { id: 3, name: 'Empanadas de Pino (3 und.)', desc: 'Clásicas empanadas chilenas rellenas de pino de carne, cebolla y especias.', price: 7800, img: 'https://images.unsplash.com/photo-1679310249395-ae267ae0d273?w=200&h=200&fit=crop' }
+                    ],
+                    principales: [
+                        { id: 4, name: 'Risotto de Hongos', desc: 'Arroz cremoso con hongos porcini, champiñones frescos y un toque de parmesano.', price: 15500, originalPrice: 16500, img: 'https://images.unsplash.com/photo-1712407881629-a8ca82aed5?w=200&h=200&fit=crop' },
+                        { id: 5, name: 'Salmón a la Plancha', desc: 'Filete de salmón fresco a la plancha, acompañado de espárragos y salsa holandesa.', price: 18900, img: 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=200&h=200&fit=crop' },
+                    ],
+                    postres: [{ id: 8, name: 'Tiramisú Clásico', desc: 'Capas de bizcochos savoiardi, café, mascarpone y cacao.', price: 6500, img: 'https://images.unsplash.com/photo-1639744211487-b27e3551b07c?w=200&h=200&fit=crop' },],
+                    bebidas: [{ id: 10, name: 'Agua Mineral', desc: 'Con o sin gas.', price: 2500, img: 'https://images.unsplash.com/photo-1639256150782-ecdb00b01e84?w=200&h=200&fit=crop' },]
+                },
+                // Plantilla de datos para un usuario que inicia sesión
+                loggedInUserDataTemplate: {
+                    nombre: 'Juan', apellidos: 'Pérez', email: 'juan@ejemplo.com', celular: '+56912345678',
+                    fechaNacimiento: '1990-05-15', comuna: 'Las Condes', instagram: '@juanperez', promoMessages: true, stars: 3,
+                    benefits: { current: [{ name: '20% Descuento Cumpleaños', expiry: '2025-12-31', id: 'b1' }], used: [] },
+                    visitHistory: [{ date: '2025-06-15', reason: 'Celebración' }],
+                    reservations: {
+                        active: [
+                            { id: 'res1', date: '2025-07-10', time: '20:00', guests: 4, place: 'interior', status: 'confirmada' },
+                            { id: 'res2', date: '2025-07-15', time: '19:30', guests: 2, place: 'terraza', status: 'pendiente' }
+                        ],
+                        past: [{ id: 'res3', date: '2025-06-01', time: '19:30', guests: 2, place: 'interior', status: 'cancelada' }]
                     }
                 }
-            }
-        };
+            };
 
-        /**
-         * Muestra una notificación toast.
-         * @param {string} message - El mensaje a mostrar.
-         * @param {string} type - 'success', 'danger', o por defecto.
-         * @param {number} duration - Duración en ms antes de desaparecer.
-         */
-        const showToast = (message, type = '', duration = 3000) => {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
-            DOMElements.toastContainer.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, duration);
-        };
+            // ===================================================================
+            // 2. CACHÉ DE ELEMENTOS DEL DOM
+            // ===================================================================
+            const DOMElements = {
+                pages: document.querySelectorAll('.content'),
+                navItems: document.querySelectorAll('.nav-item'),
+                logoutButtons: document.querySelectorAll('[id$="-logout-btn"]'),
+                toastContainer: document.getElementById('toast-container'),
+                menuContainer: document.getElementById('menu-container'),
+                categoryFilter: document.getElementById('category-filter'),
+                // Secciones que cambian con el login/logout
+                loyalty: { loggedIn: document.getElementById('loyalty-logged-in'), loggedOut: document.getElementById('loyalty-logged-out') },
+                profile: { loggedIn: document.getElementById('profile-logged-in'), loggedOut: document.getElementById('profile-logged-out') },
+            };
 
-        // ===================================================================
-        // 4. FUNCIONES DE GENERACIÓN DE HTML (REUTILIZABLES)
-        // ===================================================================
+            // ===================================================================
+            // 3. FUNCIONES DE UTILIDAD GLOBALES
+            // ===================================================================
 
-        /**
-         * Genera los campos de formulario para datos de usuario.
-         * @param {boolean} isEditMode - Si los campos son para edición o creación.
-         * @param {object} data - Los datos del usuario a precargar.
-         * @returns {string} - El HTML de los campos del formulario.
-         */
-        const generateUserFieldsHTML = (isEditMode, data = {}) => {
-            const fields = [
-                { id: 'nombre', label: 'Nombre', value: data.nombre || '', required: true },
-                { id: 'apellidos', label: 'Apellidos', value: data.apellidos || '', required: true },
-                { id: 'email', label: 'Email', value: data.email || '', type: 'email', required: true },
-                { id: 'celular', label: 'Celular', value: data.celular || '', type: 'tel', required: true },
-                { id: 'fechaNacimiento', label: 'Fecha de Nacimiento (opcional)', value: data.fechaNacimiento || '', type: 'date' },
-                { id: 'comuna', label: 'Comuna (opcional)', value: data.comuna || '' },
-                { id: 'instagram', label: 'Instagram (opcional)', value: data.instagram || '', placeholder: '@usuario' },
-            ];
-            return fields.map(f => `<div class="form-group"><label class="form-label" for="field-${f.id}">${f.label}</label><input class="form-input" type="${f.type || 'text'}" id="field-${f.id}" value="${f.value}" placeholder="${f.placeholder || ''}" ${f.required && isEditMode ? 'required' : ''}></div>`).join('');
-        };
-        
-        /**
-         * Genera un select para el motivo de la visita.
-         * @param {string} id - El ID para el elemento select.
-         * @returns {string} - El HTML del select.
-         */
-        const generateVisitReasonSelectHTML = (id) => {
-            const options = state.visitReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-            return `<div class="form-group"><label class="form-label">Motivo de la Visita</label><select id="${id}" class="form-input">${options}</select></div>`;
-        };
+            /**
+             * Muestra u oculta un modal por su ID.
+             * @param {string} modalId - El ID del modal a controlar.
+             * @param {boolean} show - `true` para mostrar, `false` para ocultar.
+             */
+            const toggleModal = (modalId, show) => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.toggle('visible', show);
+                    if (!show) {
+                        // Limpiar el input de confirmación de borrado al cerrar
+                        if (modalId === 'delete-confirm-modal') {
+                            document.getElementById('delete-confirm-input').value = '';
+                            document.getElementById('final-delete-button').disabled = true;
+                        }
+                    }
+                }
+            };
 
-        /**
-         * Genera el HTML para un solo item de reserva.
-         * @param {object} r - El objeto de la reserva.
-         * @param {boolean} isActive - Si la reserva está en la lista de activas.
-         * @returns {string} - El HTML del item de reserva.
-         */
-        const createReservationItemHTML = (r, isActive) => `
+            /**
+             * Muestra una notificación toast.
+             * @param {string} message - El mensaje a mostrar.
+             * @param {string} type - 'success', 'danger', o por defecto.
+             * @param {number} duration - Duración en ms antes de desaparecer.
+             */
+            const showToast = (message, type = '', duration = 3000) => {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
+                DOMElements.toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.remove();
+                }, duration);
+            };
+
+            // ===================================================================
+            // 4. FUNCIONES DE GENERACIÓN DE HTML (REUTILIZABLES)
+            // ===================================================================
+
+            /**
+             * Genera los campos de formulario para datos de usuario.
+             * @param {boolean} isEditMode - Si los campos son para edición o creación.
+             * @param {object} data - Los datos del usuario a precargar.
+             * @returns {string} - El HTML de los campos del formulario.
+             */
+            const generateUserFieldsHTML = (isEditMode, data = {}) => {
+                const fields = [
+                    { id: 'nombre', label: 'Nombre', value: data.nombre || '', required: true },
+                    { id: 'apellidos', label: 'Apellidos', value: data.apellidos || '', required: true },
+                    { id: 'email', label: 'Email', value: data.email || '', type: 'email', required: true },
+                    { id: 'celular', label: 'Celular', value: data.celular || '', type: 'tel', required: true },
+                    { id: 'fechaNacimiento', label: 'Fecha de Nacimiento (opcional)', value: data.fechaNacimiento || '', type: 'date' },
+                    { id: 'comuna', label: 'Comuna (opcional)', value: data.comuna || '' },
+                    { id: 'instagram', label: 'Instagram (opcional)', value: data.instagram || '', placeholder: '@usuario' },
+                ];
+                return fields.map(f => `<div class="form-group"><label class="form-label" for="field-${f.id}">${f.label}</label><input class="form-input" type="${f.type || 'text'}" id="field-${f.id}" value="${f.value}" placeholder="${f.placeholder || ''}" ${f.required && isEditMode ? 'required' : ''}></div>`).join('');
+            };
+
+            /**
+             * Genera un select para el motivo de la visita.
+             * @param {string} id - El ID para el elemento select.
+             * @returns {string} - El HTML del select.
+             */
+            const generateVisitReasonSelectHTML = (id) => {
+                const options = state.visitReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+                return `<div class="form-group"><label class="form-label">Motivo de la Visita</label><select id="${id}" class="form-input">${options}</select></div>`;
+            };
+
+            /**
+             * Genera el HTML para un solo item de reserva.
+             * @param {object} r - El objeto de la reserva.
+             * @param {boolean} isActive - Si la reserva está en la lista de activas.
+             * @returns {string} - El HTML del item de reserva.
+             */
+            const createReservationItemHTML = (r, isActive) => `
             <div class="reservation-item" data-id="${r.id}">
                 <div>
                     <div class="reservation-item-header">
@@ -541,28 +1176,28 @@
             </div>
         `;
 
-        /**
-         * Genera el HTML para la lista de historial de visitas.
-         * @param {Array} historyArray - El array de visitas.
-         * @returns {string} - El HTML de la lista.
-         */
-        const renderVisitHistoryHTML = (historyArray) => {
-            return historyArray.length 
-                ? historyArray.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('') 
-                : '<p>No tienes visitas registradas.</p>';
-        };
+            /**
+             * Genera el HTML para la lista de historial de visitas.
+             * @param {Array} historyArray - El array de visitas.
+             * @returns {string} - El HTML de la lista.
+             */
+            const renderVisitHistoryHTML = (historyArray) => {
+                return historyArray.length
+                    ? historyArray.map(v => `<div class="history-item"><div><strong>${v.reason}</strong><br><small>Fecha: ${v.date}</small></div></div>`).join('')
+                    : '<p>No tienes visitas registradas.</p>';
+            };
 
-        // ===================================================================
-        // 5. FUNCIONES DE RENDERIZADO DE PÁGINAS
-        // ===================================================================
+            // ===================================================================
+            // 5. FUNCIONES DE RENDERIZADO DE PÁGINAS
+            // ===================================================================
 
-        const renderMenu = (filter = 'all') => {
-            let menuHTML = '';
-            for (const category in state.menuData) {
-                if (filter === 'all' || filter === category) {
-                    menuHTML += `<div class="menu-category"><h3 class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>`;
-                    state.menuData[category].forEach(item => {
-                        menuHTML += `
+            const renderMenu = (filter = 'all') => {
+                let menuHTML = '';
+                for (const category in state.menuData) {
+                    if (filter === 'all' || filter === category) {
+                        menuHTML += `<div class="menu-category"><h3 class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>`;
+                        state.menuData[category].forEach(item => {
+                            menuHTML += `
                             <div class="menu-item" data-item-id="${item.id}" data-category="${category}">
                                 <img src="${item.img}" alt="${item.name}" class="menu-item-image" onerror="this.src='https://placehold.co/200x200/cccccc/ffffff?text=Imagen'">
                                 <div style="flex-grow: 1;">
@@ -574,32 +1209,32 @@
                                     </div>
                                 </div>
                             </div>`;
-                    });
-                    menuHTML += `</div>`;
+                        });
+                        menuHTML += `</div>`;
+                    }
                 }
-            }
-            DOMElements.menuContainer.innerHTML = menuHTML;
-        };
+                DOMElements.menuContainer.innerHTML = menuHTML;
+            };
 
-        const renderLoyaltyPage = () => {
-            const { stars, benefits, visitHistory } = state.userData;
-            document.getElementById('stars-display').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="fa-solid fa-star ${i < stars ? '' : 'inactive'}"></i>`).join('');
-            document.getElementById('stars-count-text').textContent = `${stars} de 5 estrellas`;
-            
-            const createBenefitItem = (b, isCurrent) => `
+            const renderLoyaltyPage = () => {
+                const { stars, benefits, visitHistory } = state.userData;
+                document.getElementById('stars-display').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="fa-solid fa-star ${i < stars ? '' : 'inactive'}"></i>`).join('');
+                document.getElementById('stars-count-text').textContent = `${stars} de 5 estrellas`;
+
+                const createBenefitItem = (b, isCurrent) => `
                 <div class="benefit-item">
                     <div><strong>${b.name}</strong><br><small>${isCurrent ? 'Válido hasta: ' + b.expiry : 'Usado el: ' + b.date}</small></div>
                     ${isCurrent ? `<button class="btn btn-success btn-sm use-benefit-btn" data-name="${b.name}">Usar</button>` : '<span>✅</span>'}
                 </div>`;
 
-            document.getElementById('current-benefits-list').innerHTML = benefits.current.length ? benefits.current.map(b => createBenefitItem(b, true)).join('') : '<p>No tienes beneficios vigentes.</p>';
-            document.getElementById('used-benefits-list').innerHTML = benefits.used.length ? benefits.used.map(b => createBenefitItem(b, false)).join('') : '<p>Aún no has usado beneficios.</p>';
-            document.getElementById('visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
-        };
+                document.getElementById('current-benefits-list').innerHTML = benefits.current.length ? benefits.current.map(b => createBenefitItem(b, true)).join('') : '<p>No tienes beneficios vigentes.</p>';
+                document.getElementById('used-benefits-list').innerHTML = benefits.used.length ? benefits.used.map(b => createBenefitItem(b, false)).join('') : '<p>Aún no has usado beneficios.</p>';
+                document.getElementById('visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
+            };
 
-        const renderProfilePage = () => {
-            const { nombre, apellidos, email, celular, fechaNacimiento, comuna, instagram, promoMessages, reservations, visitHistory } = state.userData;
-            document.getElementById('profile-data-display').innerHTML = `
+            const renderProfilePage = () => {
+                const { nombre, apellidos, email, celular, fechaNacimiento, comuna, instagram, promoMessages, reservations, visitHistory } = state.userData;
+                document.getElementById('profile-data-display').innerHTML = `
                 <p><strong>Nombre:</strong> ${nombre} ${apellidos}</p>
                 <p><strong>Email:</strong> ${email}</p>
                 <p><strong>Celular:</strong> ${celular}</p>
@@ -607,125 +1242,125 @@
                 <p><strong>Comuna:</strong> ${comuna || 'No especificada'}</p>
                 <p><strong>Instagram:</strong> ${instagram || 'No especificado'}</p>
                 <p><strong>Mensajes:</strong> ${promoMessages ? 'Activados' : 'Desactivados'}</p>`;
-            
-            document.getElementById('active-reservations-list').innerHTML = reservations.active.map(r => createReservationItemHTML(r, true)).join('');
-            document.getElementById('past-reservations-list').innerHTML = reservations.past.map(r => createReservationItemHTML(r, false)).join('');
-            document.getElementById('profile-visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
-        };
 
-        // ===================================================================
-        // 6. LÓGICA Y MANEJADORES DE LA APLICACIÓN
-        // ===================================================================
+                document.getElementById('active-reservations-list').innerHTML = reservations.active.map(r => createReservationItemHTML(r, true)).join('');
+                document.getElementById('past-reservations-list').innerHTML = reservations.past.map(r => createReservationItemHTML(r, false)).join('');
+                document.getElementById('profile-visit-history-list').innerHTML = renderVisitHistoryHTML(visitHistory);
+            };
 
-        const showPage = (pageId) => {
-            state.currentPage = pageId;
-            DOMElements.pages.forEach(p => p.classList.toggle('active', p.id === pageId));
-            DOMElements.navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId));
-            updateUI();
-        };
-        
-        const updateUI = () => {
-            const loggedIn = state.isLoggedIn;
-            DOMElements.logoutButtons.forEach(btn => btn.classList.toggle('hidden', !loggedIn));
+            // ===================================================================
+            // 6. LÓGICA Y MANEJADORES DE LA APLICACIÓN
+            // ===================================================================
 
-            DOMElements.loyalty.loggedIn.classList.toggle('hidden', !loggedIn);
-            DOMElements.loyalty.loggedOut.classList.toggle('hidden', loggedIn);
-            if (loggedIn && state.currentPage === 'fidelizacion') renderLoyaltyPage();
-
-            DOMElements.profile.loggedIn.classList.toggle('hidden', !loggedIn);
-            DOMElements.profile.loggedOut.classList.toggle('hidden', loggedIn);
-            if (loggedIn && state.currentPage === 'perfil') renderProfilePage();
-        };
-
-        const login = () => {
-            state.isLoggedIn = true;
-            state.userData = JSON.parse(JSON.stringify(state.loggedInUserDataTemplate)); // Deep copy
-            toggleModal('auth-modal', false);
-            showToast('¡Inicio de sesión exitoso!', 'success');
-            updateUI();
-        };
-        
-        const logout = () => {
-            state.isLoggedIn = false;
-            state.userData = {};
-            showToast('Sesión cerrada correctamente.');
-            if (['fidelizacion', 'perfil'].includes(state.currentPage)) {
-                showPage('inicio');
-            } else {
+            const showPage = (pageId) => {
+                state.currentPage = pageId;
+                DOMElements.pages.forEach(p => p.classList.toggle('active', p.id === pageId));
+                DOMElements.navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId));
                 updateUI();
-            }
-        };
+            };
 
-        const setProfileEditMode = (isEditing) => {
-            document.getElementById('profile-data-display').classList.toggle('hidden', isEditing);
-            const form = document.getElementById('profile-form');
-            form.classList.toggle('edit-mode', isEditing);
-            
-            // Ocultar todos los botones y luego mostrar los correctos
-            document.getElementById('edit-profile-button').classList.toggle('hidden', isEditing);
-            document.getElementById('save-profile-button').classList.toggle('hidden', !isEditing);
-            document.getElementById('cancel-edit-button').classList.toggle('hidden', !isEditing);
-            document.getElementById('delete-account-button').classList.toggle('hidden', !isEditing);
+            const updateUI = () => {
+                const loggedIn = state.isLoggedIn;
+                DOMElements.logoutButtons.forEach(btn => btn.classList.toggle('hidden', !loggedIn));
 
-            if (isEditing) {
-                form.innerHTML = generateUserFieldsHTML(true, state.userData) + 
-                    `<div class="form-group" style="display:flex; align-items:center; justify-content:space-between;">
+                DOMElements.loyalty.loggedIn.classList.toggle('hidden', !loggedIn);
+                DOMElements.loyalty.loggedOut.classList.toggle('hidden', loggedIn);
+                if (loggedIn && state.currentPage === 'fidelizacion') renderLoyaltyPage();
+
+                DOMElements.profile.loggedIn.classList.toggle('hidden', !loggedIn);
+                DOMElements.profile.loggedOut.classList.toggle('hidden', loggedIn);
+                if (loggedIn && state.currentPage === 'perfil') renderProfilePage();
+            };
+
+            const login = () => {
+                state.isLoggedIn = true;
+                state.userData = JSON.parse(JSON.stringify(state.loggedInUserDataTemplate)); // Deep copy
+                toggleModal('auth-modal', false);
+                showToast('¡Inicio de sesión exitoso!', 'success');
+                updateUI();
+            };
+
+            const logout = () => {
+                state.isLoggedIn = false;
+                state.userData = {};
+                showToast('Sesión cerrada correctamente.');
+                if (['fidelizacion', 'perfil'].includes(state.currentPage)) {
+                    showPage('inicio');
+                } else {
+                    updateUI();
+                }
+            };
+
+            const setProfileEditMode = (isEditing) => {
+                document.getElementById('profile-data-display').classList.toggle('hidden', isEditing);
+                const form = document.getElementById('profile-form');
+                form.classList.toggle('edit-mode', isEditing);
+
+                // Ocultar todos los botones y luego mostrar los correctos
+                document.getElementById('edit-profile-button').classList.toggle('hidden', isEditing);
+                document.getElementById('save-profile-button').classList.toggle('hidden', !isEditing);
+                document.getElementById('cancel-edit-button').classList.toggle('hidden', !isEditing);
+                document.getElementById('delete-account-button').classList.toggle('hidden', !isEditing);
+
+                if (isEditing) {
+                    form.innerHTML = generateUserFieldsHTML(true, state.userData) +
+                        `<div class="form-group" style="display:flex; align-items:center; justify-content:space-between;">
                         <label>Mensajes Promocionales</label>
                         <label class="switch"><input type="checkbox" id="field-promo" ${state.userData.promoMessages ? 'checked' : ''}><span class="slider"></span></label>
                     </div>`;
-            }
-        };
-
-        // ===================================================================
-        // 7. HUB CENTRAL DE MANEJO DE EVENTOS (DELEGACIÓN)
-        // ===================================================================
-
-        document.body.addEventListener('click', (e) => {
-            const target = e.target;
-            
-            // --- Delegación para Modales ---
-            const modalActionTarget = target.closest('[data-modal-action]');
-            if (modalActionTarget) {
-                const action = modalActionTarget.dataset.modalAction;
-                const modalId = modalActionTarget.dataset.modalTarget || modalActionTarget.closest('.modal')?.id;
-                if (modalId) {
-                    toggleModal(modalId, action === 'open');
                 }
-            }
+            };
 
-            // --- Delegación para Navegación Principal ---
-            const navItem = target.closest('.nav-item[data-page]');
-            if (navItem) {
-                showPage(navItem.dataset.page);
-                return;
-            }
-            
-            // --- Delegación para Acciones Rápidas ---
-            const quickAction = target.closest('.quick-action[data-page]');
-            if (quickAction) {
-                showPage(quickAction.dataset.page);
-                return;
-            }
+            // ===================================================================
+            // 7. HUB CENTRAL DE MANEJO DE EVENTOS (DELEGACIÓN)
+            // ===================================================================
 
-            // --- Delegación para Pestañas (Tabs) ---
-            const tabButton = target.closest('.tab-button[data-tab]');
-            if (tabButton) {
-                const tabId = tabButton.dataset.tab;
-                const container = tabButton.closest('.tabs').parentNode;
-                container.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-                tabButton.classList.add('active');
-                container.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}` || c.id === tabId));
-                return;
-            }
+            document.body.addEventListener('click', (e) => {
+                const target = e.target;
 
-            // --- Delegación para Items del Menú ---
-            const menuItem = target.closest('.menu-item[data-item-id]');
-            if (menuItem) {
-                const { category, itemId } = menuItem.dataset;
-                const item = state.menuData[category]?.find(i => i.id === parseInt(itemId));
-                if (item) {
-                    const modalContent = document.getElementById('menu-item-modal-content');
-                    modalContent.innerHTML = `
+                // --- Delegación para Modales ---
+                const modalActionTarget = target.closest('[data-modal-action]');
+                if (modalActionTarget) {
+                    const action = modalActionTarget.dataset.modalAction;
+                    const modalId = modalActionTarget.dataset.modalTarget || modalActionTarget.closest('.modal')?.id;
+                    if (modalId) {
+                        toggleModal(modalId, action === 'open');
+                    }
+                }
+
+                // --- Delegación para Navegación Principal ---
+                const navItem = target.closest('.nav-item[data-page]');
+                if (navItem) {
+                    showPage(navItem.dataset.page);
+                    return;
+                }
+
+                // --- Delegación para Acciones Rápidas ---
+                const quickAction = target.closest('.quick-action[data-page]');
+                if (quickAction) {
+                    showPage(quickAction.dataset.page);
+                    return;
+                }
+
+                // --- Delegación para Pestañas (Tabs) ---
+                const tabButton = target.closest('.tab-button[data-tab]');
+                if (tabButton) {
+                    const tabId = tabButton.dataset.tab;
+                    const container = tabButton.closest('.tabs').parentNode;
+                    container.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
+                    tabButton.classList.add('active');
+                    container.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabId}` || c.id === tabId));
+                    return;
+                }
+
+                // --- Delegación para Items del Menú ---
+                const menuItem = target.closest('.menu-item[data-item-id]');
+                if (menuItem) {
+                    const { category, itemId } = menuItem.dataset;
+                    const item = state.menuData[category]?.find(i => i.id === parseInt(itemId));
+                    if (item) {
+                        const modalContent = document.getElementById('menu-item-modal-content');
+                        modalContent.innerHTML = `
                         <div class="modal-header">
                             <h2 class="modal-title">${item.name}</h2>
                             <button class="close-modal" data-modal-action="close">×</button>
@@ -733,193 +1368,194 @@
                         <img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;" onerror="this.src='https://placehold.co/380x180/cccccc/ffffff?text=Imagen'">
                         <p>${item.desc}</p>
                         <div style="font-size:20px; font-weight:bold; color:var(--primary-color);">$${item.price.toLocaleString('es-CL')}</div>`;
-                    toggleModal('menu-item-modal', true);
-                }
-                return;
-            }
-            
-            // --- Delegación para botones de Logout ---
-            if (target.closest('[id$="-logout-btn"]')) {
-                logout();
-                return;
-            }
-            
-            // --- Delegación para acciones de Perfil ---
-            if (target.closest('#edit-profile-button')) setProfileEditMode(true);
-            if (target.closest('#cancel-edit-button')) setProfileEditMode(false);
-            
-            // --- Delegación para acciones de Reservas en Perfil ---
-            const reservationItem = target.closest('.reservation-item[data-id]');
-            if (reservationItem) {
-                const reservationId = reservationItem.dataset.id;
-                const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
-
-                if (target.closest('.edit-reservation-btn') && reservation) {
-                    document.getElementById('edit-reservation-id').value = reservation.id;
-                    document.getElementById('edit-reservation-date').value = reservation.date;
-                    document.getElementById('edit-reservation-time').value = reservation.time;
-                    document.getElementById('edit-reservation-guests').value = reservation.guests;
-                    document.getElementById('edit-reservation-place').value = reservation.place;
-                    toggleModal('edit-reservation-modal', true);
-                } else if (target.closest('.cancel-reservation-btn') && reservation) {
-                    const [cancelled] = state.userData.reservations.active.splice(state.userData.reservations.active.indexOf(reservation), 1);
-                    cancelled.status = 'cancelada';
-                    state.userData.reservations.past.unshift(cancelled);
-                    renderProfilePage();
-                    showToast('Reserva cancelada.', 'danger');
-                }
-            }
-            
-            // --- Delegación para botones de Fidelidad ---
-            const benefitBtn = target.closest('.use-benefit-btn[data-name]');
-            if (benefitBtn) {
-                const qrContainer = document.getElementById('qr-code-container');
-                qrContainer.innerHTML = ''; // Limpiar QR anterior
-                
-                const textToEncode = 'Beneficio: ' + benefitBtn.dataset.name;
-                state.qrCodeInstance = new QRCode(qrContainer, {
-                    text: textToEncode,
-                    width: 180,
-                    height: 180,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-                toggleModal('qr-benefit-modal', true);
-            }
-            if (target.closest('#qr-button')) {
-                state.qrCameraActive = !state.qrCameraActive;
-                const active = state.qrCameraActive;
-                const qrButton = document.getElementById('qr-button');
-                qrButton.innerHTML = active ? '<i class="fa-solid fa-xmark"></i> Cancelar' : '<i class="fa-solid fa-qrcode"></i> Registrar Visita';
-                qrButton.classList.toggle('btn-danger', active);
-                qrButton.classList.toggle('btn-success', !active);
-                document.getElementById('qr-camera').classList.toggle('hidden', !active);
-                document.getElementById('visit-form').classList.toggle('hidden', !active);
-            }
-            if (target.closest('#confirm-visit-btn')) {
-                const reason = document.getElementById('loyalty-visit-reason-select').value;
-                const date = new Date().toISOString().split('T')[0];
-                state.userData.visitHistory.unshift({ date, reason });
-                state.userData.stars++;
-                if (state.userData.stars >= 5) {
-                    state.userData.stars = 0;
-                    state.userData.benefits.current.push({ name: '40% Descuento 5 Estrellas', expiry: 'Válido por 30 días', id: 'b' + Date.now() });
-                    showToast('¡Felicidades, ganaste un descuento! Tus estrellas se reiniciaron.', 'success');
-                } else {
-                    showToast(`¡Visita registrada! Ahora tienes ${state.userData.stars} estrella(s).`);
-                }
-                document.getElementById('qr-button').click(); // Simula click en cancelar para cerrar la vista
-                renderLoyaltyPage();
-            }
-
-            // --- Delegación para cargar datos en formulario de reserva ---
-            if (target.closest('#load-my-data-btn')) {
-                if (!state.isLoggedIn) {
-                    showToast('Debes iniciar sesión para cargar tus datos.', 'warning');
-                    toggleModal('auth-modal', true);
+                        toggleModal('menu-item-modal', true);
+                    }
                     return;
                 }
-                document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.userData);
-                showToast('Datos cargados.', 'success');
-            }
-        });
 
-        // ===================================================================
-        // 8. MANEJO DE EVENTOS DIRECTOS (FORMS, INPUTS)
-        // ===================================================================
+                // --- Delegación para botones de Logout ---
+                if (target.closest('[id$="-logout-btn"]')) {
+                    logout();
+                    return;
+                }
 
-        // --- Filtro de categoría de menú ---
-        DOMElements.categoryFilter.addEventListener('change', (e) => renderMenu(e.target.value));
+                // --- Delegación para acciones de Perfil ---
+                if (target.closest('#edit-profile-button')) setProfileEditMode(true);
+                if (target.closest('#cancel-edit-button')) setProfileEditMode(false);
 
-        // --- Formularios de Autenticación ---
-        document.getElementById('login-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); });
-        document.getElementById('register-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); /* Simulación */ });
-        
-        // --- Formulario de Perfil ---
-        document.getElementById('profile-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            state.userData.nombre = document.getElementById('field-nombre').value;
-            state.userData.apellidos = document.getElementById('field-apellidos').value;
-            state.userData.email = document.getElementById('field-email').value;
-            state.userData.celular = document.getElementById('field-celular').value;
-            state.userData.fechaNacimiento = document.getElementById('field-fechaNacimiento').value;
-            state.userData.comuna = document.getElementById('field-comuna').value;
-            state.userData.instagram = document.getElementById('field-instagram').value;
-            state.userData.promoMessages = document.getElementById('field-promo').checked;
-            renderProfilePage();
-            setProfileEditMode(false);
-            showToast('Datos guardados con éxito.', 'success');
-        });
+                // --- Delegación para acciones de Reservas en Perfil ---
+                const reservationItem = target.closest('.reservation-item[data-id]');
+                if (reservationItem) {
+                    const reservationId = reservationItem.dataset.id;
+                    const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
 
-        // --- Formulario de Reserva ---
-        document.getElementById('reservation-form').addEventListener('submit', (e) => { 
-            e.preventDefault(); 
-            const newReservation = {
-                id: 'res' + Date.now(),
-                date: document.getElementById('reservation-date').value,
-                time: document.getElementById('reservation-time').value,
-                guests: parseInt(document.getElementById('reservation-guests').value),
-                place: document.getElementById('reservation-place').value,
-                status: 'confirmada'
-            };
-            if (state.isLoggedIn) {
-                state.userData.reservations.active.unshift(newReservation);
-                if(state.currentPage === 'perfil') renderProfilePage();
-            }
-            showToast('¡Reserva confirmada!', 'success'); 
-            e.target.reset(); 
-            document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.isLoggedIn ? state.userData : {}); 
-        });
+                    if (target.closest('.edit-reservation-btn') && reservation) {
+                        document.getElementById('edit-reservation-id').value = reservation.id;
+                        document.getElementById('edit-reservation-date').value = reservation.date;
+                        document.getElementById('edit-reservation-time').value = reservation.time;
+                        document.getElementById('edit-reservation-guests').value = reservation.guests;
+                        document.getElementById('edit-reservation-place').value = reservation.place;
+                        toggleModal('edit-reservation-modal', true);
+                    } else if (target.closest('.cancel-reservation-btn') && reservation) {
+                        const [cancelled] = state.userData.reservations.active.splice(state.userData.reservations.active.indexOf(reservation), 1);
+                        cancelled.status = 'cancelada';
+                        state.userData.reservations.past.unshift(cancelled);
+                        renderProfilePage();
+                        showToast('Reserva cancelada.', 'danger');
+                    }
+                }
 
-        // --- Formulario de Edición de Reserva ---
-        document.getElementById('edit-reservation-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const reservationId = document.getElementById('edit-reservation-id').value;
-            const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
-            if (reservation) {
-                reservation.date = document.getElementById('edit-reservation-date').value;
-                reservation.time = document.getElementById('edit-reservation-time').value;
-                reservation.guests = parseInt(document.getElementById('edit-reservation-guests').value);
-                reservation.place = document.getElementById('edit-reservation-place').value;
-                renderProfilePage();
-                toggleModal('edit-reservation-modal', false);
-                showToast('Reserva actualizada.', 'success');
-            }
-        });
-        
-        // --- Input de confirmación para eliminar cuenta ---
-        document.getElementById('delete-confirm-input').addEventListener('input', e => { 
-            document.getElementById('final-delete-button').disabled = e.target.value !== 'Eliminar'; 
-        });
-        document.getElementById('final-delete-button').addEventListener('click', () => { 
-            toggleModal('delete-confirm-modal', false); 
-            logout(); 
-        });
+                // --- Delegación para botones de Fidelidad ---
+                const benefitBtn = target.closest('.use-benefit-btn[data-name]');
+                if (benefitBtn) {
+                    const qrContainer = document.getElementById('qr-code-container');
+                    qrContainer.innerHTML = ''; // Limpiar QR anterior
 
-        // ===================================================================
-        // 9. INICIALIZACIÓN DE LA APLICACIÓN
-        // ===================================================================
-        const init = () => {
-            // Poblar filtro de categorías
-            Object.keys(state.menuData).forEach(cat => {
-                DOMElements.categoryFilter.innerHTML += `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`;
+                    const textToEncode = 'Beneficio: ' + benefitBtn.dataset.name;
+                    state.qrCodeInstance = new QRCode(qrContainer, {
+                        text: textToEncode,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    toggleModal('qr-benefit-modal', true);
+                }
+                if (target.closest('#qr-button')) {
+                    state.qrCameraActive = !state.qrCameraActive;
+                    const active = state.qrCameraActive;
+                    const qrButton = document.getElementById('qr-button');
+                    qrButton.innerHTML = active ? '<i class="fa-solid fa-xmark"></i> Cancelar' : '<i class="fa-solid fa-qrcode"></i> Registrar Visita';
+                    qrButton.classList.toggle('btn-danger', active);
+                    qrButton.classList.toggle('btn-success', !active);
+                    document.getElementById('qr-camera').classList.toggle('hidden', !active);
+                    document.getElementById('visit-form').classList.toggle('hidden', !active);
+                }
+                if (target.closest('#confirm-visit-btn')) {
+                    const reason = document.getElementById('loyalty-visit-reason-select').value;
+                    const date = new Date().toISOString().split('T')[0];
+                    state.userData.visitHistory.unshift({ date, reason });
+                    state.userData.stars++;
+                    if (state.userData.stars >= 5) {
+                        state.userData.stars = 0;
+                        state.userData.benefits.current.push({ name: '40% Descuento 5 Estrellas', expiry: 'Válido por 30 días', id: 'b' + Date.now() });
+                        showToast('¡Felicidades, ganaste un descuento! Tus estrellas se reiniciaron.', 'success');
+                    } else {
+                        showToast(`¡Visita registrada! Ahora tienes ${state.userData.stars} estrella(s).`);
+                    }
+                    document.getElementById('qr-button').click(); // Simula click en cancelar para cerrar la vista
+                    renderLoyaltyPage();
+                }
+
+                // --- Delegación para cargar datos en formulario de reserva ---
+                if (target.closest('#load-my-data-btn')) {
+                    if (!state.isLoggedIn) {
+                        showToast('Debes iniciar sesión para cargar tus datos.', 'warning');
+                        toggleModal('auth-modal', true);
+                        return;
+                    }
+                    document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.userData);
+                    showToast('Datos cargados.', 'success');
+                }
             });
 
-            // Preparar formularios
-            document.getElementById('register-form-tab').innerHTML = generateUserFieldsHTML(true) + '<button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>';
-            document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true);
-            document.getElementById('loyalty-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('loyalty-visit-reason-select');
-            document.getElementById('reservation-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('reservation-visit-reason-select');
-            
-            // Renderizado inicial
-            renderMenu();
-            showPage('inicio');
-            console.log("GastroHub App inicializada y optimizada.");
-        };
+            // ===================================================================
+            // 8. MANEJO DE EVENTOS DIRECTOS (FORMS, INPUTS)
+            // ===================================================================
 
-        init();
-    });
+            // --- Filtro de categoría de menú ---
+            DOMElements.categoryFilter.addEventListener('change', (e) => renderMenu(e.target.value));
+
+            // --- Formularios de Autenticación ---
+            document.getElementById('login-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); });
+            document.getElementById('register-form-tab').addEventListener('submit', (e) => { e.preventDefault(); login(); /* Simulación */ });
+
+            // --- Formulario de Perfil ---
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                state.userData.nombre = document.getElementById('field-nombre').value;
+                state.userData.apellidos = document.getElementById('field-apellidos').value;
+                state.userData.email = document.getElementById('field-email').value;
+                state.userData.celular = document.getElementById('field-celular').value;
+                state.userData.fechaNacimiento = document.getElementById('field-fechaNacimiento').value;
+                state.userData.comuna = document.getElementById('field-comuna').value;
+                state.userData.instagram = document.getElementById('field-instagram').value;
+                state.userData.promoMessages = document.getElementById('field-promo').checked;
+                renderProfilePage();
+                setProfileEditMode(false);
+                showToast('Datos guardados con éxito.', 'success');
+            });
+
+            // --- Formulario de Reserva ---
+            document.getElementById('reservation-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newReservation = {
+                    id: 'res' + Date.now(),
+                    date: document.getElementById('reservation-date').value,
+                    time: document.getElementById('reservation-time').value,
+                    guests: parseInt(document.getElementById('reservation-guests').value),
+                    place: document.getElementById('reservation-place').value,
+                    status: 'confirmada'
+                };
+                if (state.isLoggedIn) {
+                    state.userData.reservations.active.unshift(newReservation);
+                    if (state.currentPage === 'perfil') renderProfilePage();
+                }
+                showToast('¡Reserva confirmada!', 'success');
+                e.target.reset();
+                document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true, state.isLoggedIn ? state.userData : {});
+            });
+
+            // --- Formulario de Edición de Reserva ---
+            document.getElementById('edit-reservation-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const reservationId = document.getElementById('edit-reservation-id').value;
+                const reservation = state.userData.reservations.active.find(r => r.id === reservationId);
+                if (reservation) {
+                    reservation.date = document.getElementById('edit-reservation-date').value;
+                    reservation.time = document.getElementById('edit-reservation-time').value;
+                    reservation.guests = parseInt(document.getElementById('edit-reservation-guests').value);
+                    reservation.place = document.getElementById('edit-reservation-place').value;
+                    renderProfilePage();
+                    toggleModal('edit-reservation-modal', false);
+                    showToast('Reserva actualizada.', 'success');
+                }
+            });
+
+            // --- Input de confirmación para eliminar cuenta ---
+            document.getElementById('delete-confirm-input').addEventListener('input', e => {
+                document.getElementById('final-delete-button').disabled = e.target.value !== 'Eliminar';
+            });
+            document.getElementById('final-delete-button').addEventListener('click', () => {
+                toggleModal('delete-confirm-modal', false);
+                logout();
+            });
+
+            // ===================================================================
+            // 9. INICIALIZACIÓN DE LA APLICACIÓN
+            // ===================================================================
+            const init = () => {
+                // Poblar filtro de categorías
+                Object.keys(state.menuData).forEach(cat => {
+                    DOMElements.categoryFilter.innerHTML += `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`;
+                });
+
+                // Preparar formularios
+                document.getElementById('register-form-tab').innerHTML = generateUserFieldsHTML(true) + '<button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>';
+                document.getElementById('reservation-user-fields').innerHTML = generateUserFieldsHTML(true);
+                document.getElementById('loyalty-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('loyalty-visit-reason-select');
+                document.getElementById('reservation-visit-reason-container').innerHTML = generateVisitReasonSelectHTML('reservation-visit-reason-select');
+
+                // Renderizado inicial
+                renderMenu();
+                showPage('inicio');
+                console.log("GastroHub App inicializada y optimizada.");
+            };
+
+            init();
+        });
     </script>
 </body>
+
 </html>
